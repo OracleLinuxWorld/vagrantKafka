@@ -5,8 +5,23 @@
   become_method: sudo
 
   vars:
+
+    # Used for creating Unix user and setting permissions
+    # Is also the userid that owns the processes of the whole stack
     kafka_groupname: "kafka"
     kafka_username: "kafka"
+
+
+    # For use in: /etc/kafka/server.properties
+    kafka_server_broker_id: 
+
+    # For use in: /etc/kafka/consumer.properties
+    kafka_consumer_bootstrap_servers: "localhost:9092"
+
+    # For use in: /etc/kafka/producer.properties
+    kafka_producer_bootstrap_servers: "localhost:9092"
+    kafka_producer_compression_type: "snappy"
+
 
 
 
@@ -206,5 +221,13 @@
       content: '/etc/init.d/kafka-control start'
     tags:
       - kafka-controlscript
+
+
+  #############################################################################
+  ###
+  ### Configuring applications
+  ###
+
+
 
 #############################################################################
