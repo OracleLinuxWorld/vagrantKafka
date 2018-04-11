@@ -38,6 +38,7 @@ gives us the VirtualBox utilities installed by default.
 
 # Regarding port numbers that Kafka uses
 
+```
 Component	                          Port
 Apache Kafka brokers (plain text)	  9092
 Confluent Control Center	          9021
@@ -45,7 +46,7 @@ Kafka Connect REST API	            8083
 REST Proxy	                        8082
 Schema Registry REST API	          8081
 ZooKeeper	                          2181
-
+```
 
 
 # Note for MobaXterm users!
@@ -58,6 +59,7 @@ vagrant ssh-config
 
 This will produce the following output:
 
+```
 Host kafka_singlenode
   HostName 127.0.0.1
   User vagrant
@@ -68,6 +70,7 @@ Host kafka_singlenode
   IdentityFile /cygdrive/d/Users/<USERNAME>/Documents/MobaXterm/home/Vagrant/Kafka/.vagrant/machines/kafka_singlenode/virtualbox/private_key
   IdentitiesOnly yes
   LogLevel FATAL
+```
 
 Please create a seperate SSH session with abovementioned details.
 
@@ -85,17 +88,17 @@ because a.o. it skips a number of important validation steps.
 
 Please use the scripts below to control the start/stop of kafka and its components.
 
-Start ZooKeeper.  Run this command in its own terminal.
+* Start ZooKeeper.  Run this command in its own terminal.
 $ <path-to-confluent>/bin/zookeeper-server-start <path-to-confluent>/etc/kafka/zookeeper.properties
 
-Start Kafka.  Run this command in its own terminal.
+* Start Kafka.  Run this command in its own terminal.
 $ <path-to-confluent>/bin/kafka-server-start <path-to-confluent>/etc/kafka/server.properties
 
-Start Schema Registry. Run this command in its own terminal.
+* Start Schema Registry. Run this command in its own terminal.
 $ <path-to-confluent>/bin/schema-registry-start \
 <path-to-confluent>/etc/schema-registry/schema-registry.properties
 
-Start Connect in distributed mode. Run this command in its own terminal.
+* Start Connect in distributed mode. Run this command in its own terminal.
 $ <path-to-confluent>/bin/connect-distributed \
 <path-to-confluent>/etc/schema-registry/connect-avro-distributed.properties
 
