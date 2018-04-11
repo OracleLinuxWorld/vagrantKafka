@@ -13,7 +13,7 @@
 
 
     # For use in: /etc/kafka/server.properties
-    kafka_server_broker_id: 
+    # kafka_server_broker_id:
 
     # For use in: /etc/kafka/consumer.properties
     kafka_consumer_bootstrap_servers: "localhost:9092"
@@ -228,6 +228,15 @@
   ### Configuring applications
   ###
 
+  - name: Establish broker id
+    shell: echo $HOSTNAME | cut -d'-' -f3 | sed s/^0*//
+    register: brokerid
+    tags:
+      - kafka-broker-id
+
+  - name: Give broker-id number
+    debug:
+      msg: "Broker ID is {{ brokerid.stdout }}"
 
 
 #############################################################################
