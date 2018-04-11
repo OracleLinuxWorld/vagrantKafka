@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.define "kafka_node_01" do |kafka_singlenode|
+  config.vm.define "kafka_node_01" do |kafka_node_01|
     kafka_node_01.vm.synced_folder "./vagrant", "/vagrant"
     kafka_node_01.vm.box = "ol74"
     kafka_node_01.vm.hostname = 'kafka-node-01'
