@@ -1,0 +1,92 @@
+#!/bin/bash
+
+#
+### BEGIN INIT INFO
+# Provides:          kafka
+# Short-Description: Start and stop the kafka services
+# Description:       Start and stop the kafka services
+### END INIT INFO
+#
+
+set -e
+set -u
+${DEBIAN_SCRIPT_DEBUG:+ set -v -x}
+
+SELF=$(cd $(dirname $0); pwd -P)/$(basename $0)
+
+# Safeguard (relative paths, core dumps..)
+cd /
+umask 077
+
+#
+# main()
+#
+
+case "${1:-''}" in
+  'start-zookeeper')
+        echo "Start ZooKeeper..."
+	      echo ""
+	      su -l {{ kafka_username }} -c '/bin/zookeeper-server-start /etc/kafka/zookeeper.properties & 2>&1 > /dev/null'
+        ;;
+
+  'start-kafkaserver')
+        echo "Start Kafka server..."
+      	echo ""
+      	su -l {{ kafka_username }} -c '/bin/kafka-server-start /etc/kafka/server.properties & 2>&1 > /dev/null'
+        ;;
+
+  'start-schema-registry')
+        echo "Start Schema Registry..."
+        echo ""
+        su -l {{ kafka_username }} -c '/bin/schema-registry-start /etc/schema-registry/schema-registry.properties & 2>&1 > /dev/null'
+        ;;
+
+  'start')
+        echo "Start all services..."
+      	echo ""
+      	$SELF start-zookeeper
+      	$SELF start-kafkaserver
+        $SELF start-schema-registry
+        ;;
+
+  'stop-zookeeper')
+        echo "Stop ZooKeeper..."
+        echo ""
+        su -l {{ kafka_username }} -c '/bin/zookeeper-server-stop'
+        ;;
+
+  'stop-kafkaserver')
+        echo "Stop Kafka server..."
+      	echo ""
+      	su -l {{ kafka_username }} -c '/bin/kafka-server-stop'
+        ;;
+
+  'stop-schema-registry')
+        echo "Stop Schema Registry..."
+        echo ""
+        su -l {{ kafka_username }} -c '/bin/schema-registry-stop'
+        ;;
+
+  'stop')
+        echo "Stop all services..."
+      	echo ""
+        $SELF stop-schema-registry
+        $SELF stop-kafkaserver
+      	$SELF stop-zookeeper
+        ;;
+
+  'restart')
+        echo "Restart ALL services"
+        echo ""
+	      set +e; $SELF stop; set -e
+   	    $SELF stop
+	      $SELF start
+	      ;;
+
+  *)
+	echo "Usage: $SELF start|stop|restart"
+	exit 1
+	;;
+esac
+
+exit 0

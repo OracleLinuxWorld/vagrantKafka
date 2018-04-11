@@ -1,0 +1,235 @@
+- hosts: all
+  remote_user: vagrant
+  become: true
+  become_user: root
+  become_method: sudo
+
+  vars:
+    kafka_groupname: "kafka"
+    kafka_username: "kafka"
+
+
+
+
+  tasks:
+
+#############################################################################
+###
+### YUM repos
+###
+
+  - name: Add / enable the Confluent.dist repo
+    yum_repository:
+      name: Confluent.dist
+      description: Confluent repository (dist)
+      baseurl: https://packages.confluent.io/rpm/4.0/7
+      gpgkey: https://packages.confluent.io/rpm/4.0/archive.key
+      file: confluent
+      gpgcheck: yes
+      enabled: yes
+
+
+  - name: Add / enable the Confluent repo
+    yum_repository:
+      name: Confluent
+      description: Confluent repository
+      baseurl: https://packages.confluent.io/rpm/4.0
+      gpgkey: https://packages.confluent.io/rpm/4.0/archive.key
+      file: confluent
+      gpgcheck: yes
+      enabled: yes
+
+
+#############################################################################
+###
+### Install Confluent Platform
+###
+
+  - name: Installing Confluent Platform
+    yum:
+       name: "{{ item }}"
+       state: latest
+       update_cache: yes
+    with_items:
+       - confluent-platform-oss-2.11
+       - which
+       - curl
+       - java-1.8.0-openjdk-headless
+    when:
+       - ansible_os_family == "RedHat"
+       - ansible_distribution_major_version == "7"
+
+
+#############################################################################
+###
+### Users and permissions
+###
+
+  - debug:
+      msg: "Creating group {{ kafka_groupname }} and user {{ kafka_username }} ..."
+    tags:
+      - kafka-user
+
+  - group:
+      name: "{{ kafka_groupname }}"
+      state: present
+    tags:
+      - kafka-user
+
+  - user:
+      name: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: present
+      generate_ssh_key: yes
+    tags:
+      - kafka-user
+
+
+# /var/lib/zookeeper
+# the directory where the snapshot is stored
+# chown /var/lib/zookeeper
+
+  - debug:
+      msg: "Settings permissions on /var/lib/zookeeper..."
+    tags:
+      - permissions-zookeeper
+
+  - file:
+      path: "/var/lib/zookeeper"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: directory
+    tags:
+      - kafka-directories
+
+
+# /var/lib/kafka
+# directory under which to store log files
+# chown /var/lib/zookeeper
+
+  - debug:
+      msg: "Settings permissions on /var/lib/kafka..."
+    tags:
+      - permissions-kafka
+
+  - file:
+      path: "/var/lib/kafka"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: directory
+    tags:
+      - kafka-directories
+
+
+# /var/log/kafka
+# directory under which to store log files
+# chown /var/log/zookeeper
+
+  - debug:
+      msg: "Settings permissions on /var/log/kafka..."
+    tags:
+      - permissions-kafka
+
+  - file:
+      path: "/var/log/kafka"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: directory
+    tags:
+      - kafka-directories
+
+
+
+# /etc/kafka
+# directory under which to store log files
+# chown /var/lib/zookeeper
+
+  - debug:
+      msg: "Settings permissions on /etc/kafka..."
+    tags:
+      - permissions-kafka
+
+  - file:
+      path: "/etc/kafka"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      recurse: yes
+      state: directory
+    tags:
+      - kafka-directories
+
+
+# /etc/kafka
+# directory under which to store log files
+# chown /var/lib/zookeeper
+
+  - debug:
+      msg: "Settings permissions on /etc/schema-registry..."
+    tags:
+      - permissions-kafka
+
+  - file:
+      path: "/etc/schema-registry"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      recurse: yes
+      state: directory
+    tags:
+      - kafka-directories
+
+
+
+# Explicitly setting LOG_DIR in ~/.bash_profile
+# This will be used by scheme-registry-starte
+# there is an ERROR in setting the LOG_DIT from the script
+# Yes, there really is...
+# If variable LOG_DIR is set the assigment will succeed!
+
+
+  - debug:
+      msg: "Setting variable LOG_DIR to fix erroneous variable setting for schema-registry..."
+    tags:
+      - permissions-kafka
+
+  - blockinfile:
+      dest: "/home/{{ kafka_username }}/.bash_profile"
+      content: 'export LOG_DIR=/var/log/kafka'
+    tags:
+      - kafka-environment
+
+
+
+#############################################################################
+###
+### Create control script in /etc/init.d
+###
+
+  - template:
+     src: templates/kafka-control.sh.j2
+     dest: /etc/init.d/kafka-control
+     owner: root
+     group: root
+     mode: 0755
+    tags:
+      - kafka-controlscript
+
+
+  - debug:
+      msg: "Getting the various services to start at boot time..."
+
+  - file:
+      path: "/etc/rc.d/rc.local"
+      mode: u+x
+      state: touch
+    tags:
+      - kafka-controlscript
+
+  - blockinfile:
+      dest: "/etc/rc.d/rc.local"
+      content: '/etc/init.d/kafka-control start'
+    tags:
+      - kafka-controlscript
+
+
+
+#############################################################################
