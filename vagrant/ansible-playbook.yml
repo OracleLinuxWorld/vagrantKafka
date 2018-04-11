@@ -65,18 +65,15 @@
 ### Users and permissions
 ###
 
-  - debug:
-      msg: "Creating group {{ kafka_groupname }} and user {{ kafka_username }} ..."
-    tags:
-      - kafka-user
-
-  - group:
+  - name: Create group for kafka
+    group:
       name: "{{ kafka_groupname }}"
       state: present
     tags:
       - kafka-user
 
-  - user:
+  - name: Create user for kafka
+    user:
       name: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
       state: present
@@ -85,16 +82,12 @@
       - kafka-user
 
 
-# /var/lib/zookeeper
-# the directory where the snapshot is stored
-# chown /var/lib/zookeeper
+  - name: What is /var/lib/zookeeper
+    debug:
+      msg: "/var/lib/zookeeper is the directory where the snapshot is stored..."
 
-  - debug:
-      msg: "Settings permissions on /var/lib/zookeeper..."
-    tags:
-      - permissions-zookeeper
-
-  - file:
+  - name: Creating directory /var/lib/zookeeper
+    file:
       path: "/var/lib/zookeeper"
       owner: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
@@ -103,16 +96,12 @@
       - kafka-directories
 
 
-# /var/lib/kafka
-# directory under which to store log files
-# chown /var/lib/zookeeper
+  - name: What is /var/lib/kafka
+    debug:
+      msg: "/var/lib/kafka is the directory under which to store log files..."
 
-  - debug:
-      msg: "Settings permissions on /var/lib/kafka..."
-    tags:
-      - permissions-kafka
-
-  - file:
+  - name: Creating directory /var/lib/kafka
+    file:
       path: "/var/lib/kafka"
       owner: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
@@ -121,16 +110,12 @@
       - kafka-directories
 
 
-# /var/log/kafka
-# directory under which to store log files
-# chown /var/log/zookeeper
+  - name: What is /var/log/kafka
+    debug:
+      msg: "/var/log/kafka is also a directory under which to store log files..."
 
-  - debug:
-      msg: "Settings permissions on /var/log/kafka..."
-    tags:
-      - permissions-kafka
-
-  - file:
+  - name: Creating directory /var/log/kafka
+    file:
       path: "/var/log/kafka"
       owner: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
@@ -139,17 +124,12 @@
       - kafka-directories
 
 
+  - name: What is /etc/kafka
+    debug:
+      msg: "/etc/kafka is the config dir for Kafka..."
 
-# /etc/kafka
-# directory under which to store log files
-# chown /var/lib/zookeeper
-
-  - debug:
-      msg: "Settings permissions on /etc/kafka..."
-    tags:
-      - permissions-kafka
-
-  - file:
+  - name: Setting permissions on /etc/kafka
+    file:
       path: "/etc/kafka"
       owner: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
@@ -159,16 +139,12 @@
       - kafka-directories
 
 
-# /etc/kafka
-# directory under which to store log files
-# chown /var/lib/zookeeper
+  - name: What /etc/schema-registry
+    debug:
+      msg: "/etc/schema-registry is a seperate config dir for the schema-registry component..."
 
-  - debug:
-      msg: "Settings permissions on /etc/schema-registry..."
-    tags:
-      - permissions-kafka
-
-  - file:
+  - name: Setting permissions on /etc/schema-registry
+    file:
       path: "/etc/schema-registry"
       owner: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
@@ -181,17 +157,15 @@
 
 # Explicitly setting LOG_DIR in ~/.bash_profile
 # This will be used by scheme-registry-starte
-# there is an ERROR in setting the LOG_DIT from the script
-# Yes, there really is...
+# there is an ERROR in setting the LOG_DIR from the pre-installed script
 # If variable LOG_DIR is set the assigment will succeed!
 
-
-  - debug:
+  - name: NOTE
+    debug:
       msg: "Setting variable LOG_DIR to fix erroneous variable setting for schema-registry..."
-    tags:
-      - permissions-kafka
 
-  - blockinfile:
+  - name: Updating kafka bash_profile
+    blockinfile:
       dest: "/home/{{ kafka_username }}/.bash_profile"
       content: 'export LOG_DIR=/var/log/kafka'
     tags:
@@ -204,7 +178,8 @@
 ### Create control script in /etc/init.d
 ###
 
-  - template:
+  - name: Copying control script
+    template:
      src: templates/kafka-control.sh.j2
      dest: /etc/init.d/kafka-control
      owner: root
@@ -213,23 +188,23 @@
     tags:
       - kafka-controlscript
 
-
-  - debug:
+  - name: Updating startup sequence
+    debug:
       msg: "Getting the various services to start at boot time..."
 
-  - file:
+  - name: Setting up execute permissions on rc local script
+    file:
       path: "/etc/rc.d/rc.local"
       mode: u+x
       state: touch
     tags:
       - kafka-controlscript
 
-  - blockinfile:
+  - name: Inserting control script entry in rc local script
+    blockinfile:
       dest: "/etc/rc.d/rc.local"
       content: '/etc/init.d/kafka-control start'
     tags:
       - kafka-controlscript
-
-
 
 #############################################################################
