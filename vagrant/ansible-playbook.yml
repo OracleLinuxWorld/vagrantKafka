@@ -15,7 +15,13 @@
     #
     # Kafka broker.id (kafka_server_broker_id) will be dynamically derived from the hostname
     kafka_server_num_partitions: 2
-    #zookeeper.connect=localhost:2181
+    # zookeeper.connect=localhost:2181
+    #
+    # NOTE: Confluent Proactive Support
+    # If set to true, and confluent-support-metrics package is installed
+    # then the feature to collect and report support metrics
+    # ("Metrics") is enabled.  If set to false, the feature is disabled.
+    kafka_server_confluent_support_metrics_enable: "false"
 
 
     # /etc/kafka/consumer.properties
