@@ -139,35 +139,24 @@
       - kafka-directories
 
 
-  - name: What is /etc/kafka
-    debug:
-      msg: "/etc/kafka is the config dir for Kafka..."
-
-  - name: Setting permissions on /etc/kafka
+  - name: Setting permissions on /etc/kafka dirs
     file:
-      path: "/etc/kafka"
+      path: "{{ item }}"
       owner: "{{ kafka_username }}"
       group: "{{ kafka_groupname }}"
       recurse: yes
       state: directory
+    with_items:
+      - /etc/kafka
+      - /etc/kafka-connect-elasticsearch
+      - /etc/kafka-connect-hdfs
+      - /etc/kafka-connect-jdbc
+      - /etc/kafka-connect-s3
+      - /etc/kafka-connect-storage-common
+      - /etc/kafka-rest
+      - /etc/schema-registry
     tags:
       - kafka-directories
-
-
-  - name: What /etc/schema-registry
-    debug:
-      msg: "/etc/schema-registry is a seperate config dir for the schema-registry component..."
-
-  - name: Setting permissions on /etc/schema-registry
-    file:
-      path: "/etc/schema-registry"
-      owner: "{{ kafka_username }}"
-      group: "{{ kafka_groupname }}"
-      recurse: yes
-      state: directory
-    tags:
-      - kafka-directories
-
 
 
 # Explicitly setting LOG_DIR in ~/.bash_profile
