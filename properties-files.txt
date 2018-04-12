@@ -1,0 +1,56 @@
+# Configfiles
+Below you will find all .properties files and their most relevant default values.
+
+For some of them variables will be created in the playbook. These variables will be
+used to template .j2 files from the templates folder.
+
+
+## Server, consumer, producer, log etc
+* /etc/kafka/server.properties
+broker.id=0
+num.partitions=1
+zookeeper.connect=localhost:2181
+
+* /etc/kafka/consumer.properties
+bootstrap.servers=localhost:9092
+group.id=test-consumer-group
+
+* /etc/kafka/producer.properties
+bootstrap.servers=localhost:9092
+compression.type=none
+
+* /etc/kafka-rest/kafka-rest.properties
+id=kafka-rest-test-server
+schema.registry.url=http://localhost:8081
+zookeeper.connect=localhost:2181
+bootstrap.servers=PLAINTEXT://localhost:9092
+
+
+For the following files no variables will be changed.
+* /etc/kafka-rest/log4j.properties
+* /etc/kafka/zookeeper.properties
+* /etc/kafka/log4j.properties
+* /etc/kafka/tools-log4j.properties
+
+
+## Connect
+* /etc/kafka/connect-console-sink.properties
+* /etc/kafka/connect-console-source.properties
+* /etc/kafka/connect-distributed.properties
+* /etc/kafka/connect-file-sink.properties
+* /etc/kafka/connect-file-source.properties
+* /etc/kafka/connect-log4j.properties
+* /etc/kafka/connect-standalone.properties
+* /etc/kafka-connect-elasticsearch/quickstart-elasticsearch.properties
+* /etc/kafka-connect-hdfs/quickstart-hdfs.properties
+* /etc/kafka-connect-jdbc/sink-quickstart-sqlite.properties
+* /etc/kafka-connect-jdbc/source-quickstart-sqlite.properties
+* /etc/kafka-connect-s3/quickstart-s3.properties
+* /etc/kafka-connect-s3/quickstart-schema-source-for-s3.properties
+
+
+## Schema registry
+* /etc/schema-registry/connect-avro-distributed.properties
+* /etc/schema-registry/connect-avro-standalone.properties
+* /etc/schema-registry/log4j.properties
+* /etc/schema-registry/schema-registry.properties
