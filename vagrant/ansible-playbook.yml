@@ -15,6 +15,7 @@
     #
     # Kafka broker.id (kafka_server_broker_id) will be dynamically derived from the hostname
     kafka_server_num_partitions: 2
+    kafka_listeners: "PLAINTEXT://:9092"
     # zookeeper.connect=localhost:2181
     #
     # NOTE: Confluent Proactive Support
