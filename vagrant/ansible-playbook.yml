@@ -11,19 +11,31 @@
     kafka_groupname: "kafka"
     kafka_username: "kafka"
 
+    # /etc/kafka/server.properties
+    #
+    # Kafka broker.id (kafka_server_broker_id) will be dynamically derived from the hostname
+    kafka_server_num_partitions: 2
+    #zookeeper.connect=localhost:2181
 
-    # For use in: /etc/kafka/server.properties
-    # kafka_server_broker_id:
 
-    # For use in: /etc/kafka/consumer.properties
+    # /etc/kafka/consumer.properties
+    #
     kafka_consumer_bootstrap_servers: "localhost:9092"
+    kafka_consumer_group_id: "test-consumer-group"
 
-    # For use in: /etc/kafka/producer.properties
+
+    # /etc/kafka/producer.properties
+    #
     kafka_producer_bootstrap_servers: "localhost:9092"
     kafka_producer_compression_type: "snappy"
 
 
-
+    # /etc/kafka-rest/kafka-rest.properties
+    #
+    kafka_rest_id: "kafka-rest-test-server"
+    kafka_rest_schema_registry_url: "http://localhost:8081"
+    kafka_rest_zookeeper_connect: "localhost:2181"
+    kafka_rest_bootstrap_servers: "PLAINTEXT://localhost:9092"
 
 
   tasks:
@@ -184,7 +196,7 @@
 
   - name: Copying control script
     template:
-     src: templates/kafka-control.sh.j2
+     src: templates/controlscript/kafka-control.sh.j2
      dest: /etc/init.d/kafka-control
      owner: root
      group: root
@@ -219,13 +231,60 @@
 
   - name: Establish broker id
     shell: echo $HOSTNAME | cut -d'-' -f3 | sed s/^0*//
-    register: brokerid
+    register: kafka_server_broker_id
     tags:
       - kafka-broker-id
 
   - name: Give broker-id number
     debug:
-      msg: "Broker ID is {{ brokerid.stdout }}"
+      msg: "Broker ID is {{ kafka_server_broker_id.stdout }}"
+
+
+#############################################################################
+###
+### Templating config files
+###
+
+  - name: Copying server.properties
+    template:
+      src: templates/kafka/server.properties.j2
+      dest: /etc/kafka/server.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying producer.properties
+    template:
+      src: templates/kafka/producer.properties.j2
+      dest: /etc/kafka/producer.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying consumer.properties
+    template:
+      src: templates/kafka/consumer.properties.j2
+      dest: /etc/kafka/consumer.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying kafka-rest.properties
+    template:
+      src: templates/kafka-rest/kafka-rest.properties.j2
+      dest: /etc/kafka-rest/kafka-rest.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
 
 
 #############################################################################
