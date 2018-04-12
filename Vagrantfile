@@ -9,6 +9,10 @@ Vagrant.configure("2") do |config|
     kafka_node_01.vm.network :"private_network", type: "dhcp"
     kafka_node_01.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+      v.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+      v.customize ["modifyvm", :id, "--usb", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
       v.customize ["modifyvm", :id, "--name", "kafka_node_01"]
     end
     # Run Ansible from the Vagrant VM

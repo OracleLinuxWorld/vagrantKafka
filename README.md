@@ -2,7 +2,7 @@
 Vagrant to setup Kafka on Oracle Linux
 
 
-# Ansible in guest VM:
+# Ansible in guest VM
 
 Because this Vagrant system is developed to work on both Windows and Mac
 we will need Ansible to be available in the guest VM (Vagrant method: ansible_local).
@@ -10,7 +10,7 @@ we will need Ansible to be available in the guest VM (Vagrant method: ansible_lo
 Ansible will be installed on the guest VM automatically.
 
 
-# VirtualBox file transfer mechanism:
+# VirtualBox file transfer mechanism
 
 To be able to use the VirtualBox default transfer mechanism for the
 Ansible playbooks we need the VirtualBox utilities installed on the guest VM.
@@ -62,14 +62,14 @@ vagrant ssh-config
 This will produce the following output:
 
 ```
-Host kafka_singlenode
+Host kafka_node_01
   HostName 127.0.0.1
   User vagrant
   Port 2222
   UserKnownHostsFile /dev/null
   StrictHostKeyChecking no
   PasswordAuthentication no
-  IdentityFile /cygdrive/d/Users/<USERNAME>/Documents/MobaXterm/home/Vagrant/Kafka/.vagrant/machines/kafka_singlenode/virtualbox/private_key
+  IdentityFile /cygdrive/d/Users/<USERNAME>/Documents/MobaXterm/home/Vagrant/Kafka/.vagrant/machines/kafka_node_01/virtualbox/private_key
   IdentitiesOnly yes
   LogLevel FATAL
 ```
