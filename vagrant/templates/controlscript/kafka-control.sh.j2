@@ -41,12 +41,22 @@ case "${1:-''}" in
         su -l {{ kafka_username }} -c '/bin/schema-registry-start /etc/schema-registry/schema-registry.properties & 2>&1 > /dev/null'
         ;;
 
+  'start-kafka-rest')
+        echo "Start Kafka REST..."
+        echo ""
+        su -l {{ kafka_username }} -c '/bin/kafka-rest-start /etc/kafka-rest/kafka-rest.properties & 2>&1 > /dev/null'
+        ;;
+
   'start')
         echo "Start all services..."
       	echo ""
       	$SELF start-zookeeper
+        sleep 3
       	$SELF start-kafkaserver
+        sleep 3
         $SELF start-schema-registry
+        sleep 3
+        $SELF start-kafka-rest
         ;;
 
   'stop-zookeeper')
@@ -65,6 +75,12 @@ case "${1:-''}" in
         echo "Stop Schema Registry..."
         echo ""
         su -l {{ kafka_username }} -c '/bin/schema-registry-stop'
+        ;;
+
+  'stop-kafka-rest')
+        echo "Stop Kafka REST..."
+        echo ""
+        su -l {{ kafka_username }} -c '/bin/kafka-rest-stop'
         ;;
 
   'stop')
