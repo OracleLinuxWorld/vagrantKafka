@@ -14,15 +14,9 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--usb", "off"]
       v.customize ["modifyvm", :id, "--audio", "none"]
       v.customize ["modifyvm", :id, "--name", "kafka_node_01"]
-    end
+    end # End of "kafka_node_01.vm.provider"
+  end   # End of config.vm.define "kafka_node_01"
 
-
-
-    # Run Ansible from the Vagrant VM
-    #kafka_node_01.vm.provision "ansible_local" do |ansible|
-    #  ansible.verbose = "v"
-    #  ansible.playbook = "ansible-playbook.yml"
-    #end
 
     # Run the same playbook on all hosts
     # :vars section provided as example on passing variables to
@@ -35,8 +29,6 @@ Vagrant.configure("2") do |config|
             "kafkabrokers:vars" => {"variable1" => "example1",
                                     "variable2" => "example2"}
           }
-    end
+    end   # End of "config.vm.provision"
 
-
-  end
-end
+end       # End of "Vagrant.configure"

@@ -53,11 +53,11 @@
 
 
 
-#  - name: Give all the hosts known in the inventory file group kafkabrokers
-#    debug:
-#      msg="{{ item }}"
-#    with_items:
-#      - "{{ groups['kafkabrokers'] }}"
+  - name: All the hosts known in the inventory file group kafkabrokers
+    debug:
+      msg="{{ item }}"
+    with_items:
+      - "{{ groups['kafkabrokers'] }}"
 
 
 #############################################################################
