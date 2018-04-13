@@ -1,0 +1,311 @@
+- hosts: all
+  remote_user: vagrant
+  become: true
+  become_user: root
+  become_method: sudo
+  gather_facts: true
+
+  vars:
+
+
+    # On which interface are we going to connect to the Kafka kafkabrokers
+    #
+    kafka_mgmt_interface: "eth0"
+    kafka_service_interface: "eth1"
+
+
+    # Used for creating Unix user and setting permissions
+    # Is also the userid that owns the processes of the whole stack
+    kafka_groupname: "kafka"
+    kafka_username: "kafka"
+
+
+    # /etc/kafka/server.properties
+    #
+    # Kafka broker.id (kafka_server_broker_id) will be dynamically derived from the hostname
+    kafka_server_num_partitions: 2
+    kafka_server_listeners: "PLAINTEXT://:9092"
+    kafka_server_zookeeper_connect: "localhost:2181"
+    #
+    # NOTE: Confluent Proactive Support - requires support contract
+    kafka_server_confluent_support_metrics_enable: "false"
+
+
+    # /etc/kafka/consumer.properties
+    #
+    kafka_consumer_bootstrap_servers: "localhost:9092"
+    kafka_consumer_group_id: "test-consumer-group"
+
+
+    # /etc/kafka/producer.properties
+    #
+    kafka_producer_bootstrap_servers: "localhost:9092"
+    kafka_producer_compression_type: "snappy"
+
+
+    # /etc/kafka-rest/kafka-rest.properties
+    #
+    kafka_rest_id: "kafka-rest-test-server"
+    kafka_rest_schema_registry_url: "http://localhost:8081"
+    kafka_rest_zookeeper_connect: "localhost:2181"
+    kafka_rest_bootstrap_servers: "PLAINTEXT://localhost:9092"
+
+
+
+
+  tasks:
+
+  - name: Give all the hosts known in the inventory file group kafkabrokers
+    debug:
+      msg="{{ item }}"
+    with_items:
+      - "{{ groups['kafkabrokers'] }}"
+
+#############################################################################
+###
+### YUM repos
+###
+
+  - name: Add / enable the Confluent.dist repo
+    yum_repository:
+      name: Confluent.dist
+      description: Confluent repository (dist)
+      baseurl: https://packages.confluent.io/rpm/4.0/7
+      gpgkey: https://packages.confluent.io/rpm/4.0/archive.key
+      file: confluent
+      gpgcheck: yes
+      enabled: yes
+
+
+  - name: Add / enable the Confluent repo
+    yum_repository:
+      name: Confluent
+      description: Confluent repository
+      baseurl: https://packages.confluent.io/rpm/4.0
+      gpgkey: https://packages.confluent.io/rpm/4.0/archive.key
+      file: confluent
+      gpgcheck: yes
+      enabled: yes
+
+
+#############################################################################
+###
+### Install Confluent Platform
+###
+
+  - name: Installing Confluent Platform
+    yum:
+       name: "{{ item }}"
+       state: latest
+       update_cache: yes
+    with_items:
+       - confluent-platform-oss-2.11
+       - which
+       - curl
+       - java-1.8.0-openjdk-headless
+    when:
+       - ansible_os_family == "RedHat"
+       - ansible_distribution_major_version == "7"
+
+
+#############################################################################
+###
+### Users and permissions
+###
+
+  - name: Create group for kafka
+    group:
+      name: "{{ kafka_groupname }}"
+      state: present
+    tags:
+      - kafka-user
+
+  - name: Create user for kafka
+    user:
+      name: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: present
+      generate_ssh_key: yes
+    tags:
+      - kafka-user
+
+
+  - name: What is /var/lib/zookeeper
+    debug:
+      msg: "/var/lib/zookeeper is the directory where the snapshot is stored..."
+
+  - name: Creating directory /var/lib/zookeeper
+    file:
+      path: "/var/lib/zookeeper"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: directory
+    tags:
+      - kafka-directories
+
+
+  - name: What is /var/lib/kafka
+    debug:
+      msg: "/var/lib/kafka is the directory under which to store log files..."
+
+  - name: Creating directory /var/lib/kafka
+    file:
+      path: "/var/lib/kafka"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: directory
+    tags:
+      - kafka-directories
+
+
+  - name: What is /var/log/kafka
+    debug:
+      msg: "/var/log/kafka is also a directory under which to store log files..."
+
+  - name: Creating directory /var/log/kafka
+    file:
+      path: "/var/log/kafka"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      state: directory
+    tags:
+      - kafka-directories
+
+
+  - name: Setting permissions on /etc/kafka dirs
+    file:
+      path: "{{ item }}"
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      recurse: yes
+      state: directory
+    with_items:
+      - /etc/kafka
+      - /etc/kafka-connect-elasticsearch
+      - /etc/kafka-connect-hdfs
+      - /etc/kafka-connect-jdbc
+      - /etc/kafka-connect-s3
+      - /etc/kafka-connect-storage-common
+      - /etc/kafka-rest
+      - /etc/schema-registry
+    tags:
+      - kafka-directories
+
+
+# Explicitly setting LOG_DIR in ~/.bash_profile
+# This will be used by scheme-registry-starte
+# there is an ERROR in setting the LOG_DIR from the pre-installed script
+# If variable LOG_DIR is set the assigment will succeed!
+
+  - name: NOTE
+    debug:
+      msg: "Setting variable LOG_DIR to fix erroneous variable setting for schema-registry..."
+
+  - name: Updating kafka bash_profile
+    blockinfile:
+      dest: "/home/{{ kafka_username }}/.bash_profile"
+      content: 'export LOG_DIR=/var/log/kafka'
+    tags:
+      - kafka-environment
+
+
+
+#############################################################################
+###
+### Create control script in /etc/init.d
+###
+
+  - name: Copying control script
+    template:
+     src: templates/controlscript/kafka-control.sh.j2
+     dest: /etc/init.d/kafka-control
+     owner: root
+     group: root
+     mode: 0755
+    tags:
+      - kafka-controlscript
+
+  - name: Updating startup sequence
+    debug:
+      msg: "Getting the various services to start at boot time..."
+
+  - name: Setting up execute permissions on rc local script
+    file:
+      path: "/etc/rc.d/rc.local"
+      mode: u+x
+      state: touch
+    tags:
+      - kafka-controlscript
+
+  - name: Inserting control script entry in rc local script
+    blockinfile:
+      dest: "/etc/rc.d/rc.local"
+      content: '/etc/init.d/kafka-control start'
+    tags:
+      - kafka-controlscript
+
+
+  #############################################################################
+  ###
+  ### Configuring applications
+  ###
+
+  - name: Establish broker id
+    shell: echo $HOSTNAME | cut -d'-' -f3 | sed s/^0*//
+    register: kafka_server_broker_id
+    tags:
+      - kafka-broker-id
+
+  - name: Give broker-id number
+    debug:
+      msg: "Broker ID is {{ kafka_server_broker_id.stdout }}"
+
+
+#############################################################################
+###
+### Templating config files
+###
+
+  - name: Copying server.properties
+    template:
+      src: templates/kafka/server.properties.j2
+      dest: /etc/kafka/server.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying producer.properties
+    template:
+      src: templates/kafka/producer.properties.j2
+      dest: /etc/kafka/producer.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying consumer.properties
+    template:
+      src: templates/kafka/consumer.properties.j2
+      dest: /etc/kafka/consumer.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying kafka-rest.properties
+    template:
+      src: templates/kafka-rest/kafka-rest.properties.j2
+      dest: /etc/kafka-rest/kafka-rest.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+
+
+#############################################################################
