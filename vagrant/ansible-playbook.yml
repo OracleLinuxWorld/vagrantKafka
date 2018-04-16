@@ -17,6 +17,12 @@
     #
     kafka_mgmt_interface: "eth0"
     kafka_service_interface: "eth1"
+    kafka_mgmt_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_mgmt_interface].ipv4.address }}"
+    kafka_service_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_service_interface].ipv4.address }}"
+
+    # PS: the hostvars behaviour as used above might be deprecated in a later Ansible 2.5.x release
+    # When a suitable vars dict method is available then rewrite the two lines above
+
 
     # Used for creating Unix user and setting permissions
     # Is also the userid that owns the processes of the whole stack
@@ -32,7 +38,6 @@
     #
     # NOTE: Confluent Proactive Support - requires support contract
     kafka_server_confluent_support_metrics_enable: "false"
-
 
     # /etc/kafka/consumer.properties
     #
@@ -66,6 +71,18 @@
       msg="{{ item }}"
     with_items:
       - "{{ groups['kafkabrokers'] }}"
+
+  - name: Kafka Service IP address
+    debug:
+      msg="Kafka service IP address is {{ item }}"
+    with_items:
+      - "{{ kafka_service_ip_address }}"
+
+  - name: Kafka Management IP address
+    debug:
+      msg="Kafka management IP address is {{ item }}"
+    with_items:
+      - "{{ kafka_mgmt_ip_address }}"
 
 
 #############################################################################
