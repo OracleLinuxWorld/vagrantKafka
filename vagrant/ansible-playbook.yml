@@ -5,13 +5,18 @@
   become_method: sudo
   gather_facts: true
 
+
+#############################################################################
+###
+### Variables
+###
+
   vars:
 
     # On which interface are we going to connect to the Kafka kafkabrokers
     #
     kafka_mgmt_interface: "eth0"
     kafka_service_interface: "eth1"
-
 
     # Used for creating Unix user and setting permissions
     # Is also the userid that owns the processes of the whole stack
@@ -49,15 +54,21 @@
     kafka_rest_bootstrap_servers: "PLAINTEXT://localhost:9092"
 
 
+#############################################################################
+###
+### Tasks
+###
+
   tasks:
-
-
 
   - name: All the hosts known in the inventory file group kafkabrokers
     debug:
       msg="{{ item }}"
     with_items:
       - "{{ groups['kafkabrokers'] }}"
+
+  - name: Generate a /tmp/ansible.vars to check for hostvars
+    action: template src=templates/checkvars.j2 dest=/tmp/ansible.vars
 
 
 #############################################################################
