@@ -67,9 +67,6 @@
     with_items:
       - "{{ groups['kafkabrokers'] }}"
 
-  - name: Generate a /tmp/ansible.vars to check for hostvars
-    action: template src=templates/checkvars.j2 dest=/tmp/ansible.vars
-
 
 #############################################################################
 ###
