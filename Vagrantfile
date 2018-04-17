@@ -23,6 +23,11 @@ Vagrant.configure("2") do |config|
     end # End of "kafka_node_01.vm.provider"
   end   # End of config.vm.define "kafka_node_01"
 
+    # Set auto_update to false
+    # This will not automatically update the guest additions on VM boot
+    # Set to "true" if you want auto-updates
+    config.vbguest.auto_update = false
+
     # Run the same playbook on all hosts
     # :vars section provided as example on passing variables to
     # ansible in possible future versions
