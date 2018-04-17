@@ -230,42 +230,6 @@
       - kafka-environment
 
 
-
-#############################################################################
-###
-### Create control script in /etc/init.d
-###
-
-  - name: Copying control script
-    template:
-     src: templates/controlscript/kafka-control.sh.j2
-     dest: /etc/init.d/kafka-control
-     owner: root
-     group: root
-     mode: 0755
-    tags:
-      - kafka-controlscript
-
-  - name: Updating startup sequence
-    debug:
-      msg: "Getting the various services to start at boot time..."
-
-  - name: Setting up execute permissions on rc local script
-    file:
-      path: "/etc/rc.d/rc.local"
-      mode: u+x
-      state: touch
-    tags:
-      - kafka-controlscript
-
-  - name: Inserting control script entry in rc local script
-    blockinfile:
-      dest: "/etc/rc.d/rc.local"
-      content: '/etc/init.d/kafka-control start'
-    tags:
-      - kafka-controlscript
-
-
   #############################################################################
   ###
   ### Configuring applications
@@ -398,5 +362,126 @@
     tags:
       - kafka-configfiles
 
+
+
+
+#############################################################################
+###
+### Create control script in /etc/init.d
+###
+
+  - name: Copying control script
+    template:
+     src: templates/controlscript/kafka-control.sh.j2
+     dest: /etc/init.d/kafka-control
+     owner: root
+     group: root
+     mode: 0755
+    tags:
+      - kafka-controlscript
+
+#  - name: Updating startup sequence
+#    debug:
+#      msg: "Getting the various services to start at boot time..."
+#
+#  - name: Setting up execute permissions on rc local script
+#    file:
+#      path: "/etc/rc.d/rc.local"
+#      mode: u+x
+#      state: touch
+#    tags:
+#      - kafka-controlscript
+#
+#  - name: Inserting control script entry in rc local script
+#    blockinfile:
+#      dest: "/etc/rc.d/rc.local"
+#      content: '/etc/init.d/kafka-control start'
+#    tags:
+#      - kafka-controlscript
+
+
+#############################################################################
+###
+### Creating systemctl services
+###
+
+  - name: Copy systemctl service file kafka-rest.service
+    copy:
+      src: files/usr/lib/systemd/system/kafka-rest.service
+      dest: /usr/lib/systemd/system/kafka-rest.service
+      mode: 0755
+      owner: root
+      group: root
+    when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
+    tags:
+      - kafka-systemctl
+
+  - name: Copy systemctl service file kafka.service
+    copy:
+      src: files/usr/lib/systemd/system/kafka.service
+      dest: /usr/lib/systemd/system/kafka.service
+      mode: 0755
+      owner: root
+      group: root
+    when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
+    tags:
+      - kafka-systemctl
+
+  - name: Copy systemctl service file schema-registry.service
+    copy:
+      src: files/usr/lib/systemd/system/schema-registry.service
+      dest: /usr/lib/systemd/system/schema-registry.service
+      mode: 0755
+      owner: root
+      group: root
+    when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
+    tags:
+      - kafka-systemctl
+
+
+  - name: Copy systemctl service file zookeeper.service
+    copy:
+      src: files/usr/lib/systemd/system/zookeeper.service
+      dest: /usr/lib/systemd/system/zookeeper.service
+      mode: 0755
+      owner: root
+      group: root
+    when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
+    tags:
+      - kafka-systemctl
+
+
+#############################################################################
+###
+### Enabling and starting Kafka at boot
+###
+
+  - debug:
+      msg: "Getting the various Kafka services up and running..."
+
+  - name: Start and enable services at boot time
+    systemd:
+       name: "{{ item }}"
+       state: started
+       enabled: True
+       daemon_reload: yes
+    with_items:
+       - zookeeper
+       - kafka
+       - kafka-rest
+       - schema-registry
+    when:
+       - ansible_os_family == "RedHat"
+       - ansible_distribution_major_version == "7"
+    tags:
+      - kafka-systemctl
 
 #############################################################################

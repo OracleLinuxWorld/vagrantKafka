@@ -1,0 +1,19 @@
+[Unit]
+Description=Confluent Kafka broker services
+After=syslog.target network.target zookeeper.target
+
+[Service]
+LimitMEMLOCK=infinity
+LimitNOFILE=65535
+
+#Type=simple
+# idle: similar to simple, the actual execution of the service binary is delayed
+#       until all jobs are finished, which avoids mixing the status output with shell output of services.
+RemainAfterExit=yes
+User=root
+Group=root
+ExecStart=/etc/init.d/kafka-control start-kafkaserver
+ExecStop=/etc/init.d/kafka-control stop-kafkaserver
+
+[Install]
+WantedBy=multi-user.target
