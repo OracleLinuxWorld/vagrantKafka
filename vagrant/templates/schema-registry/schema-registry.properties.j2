@@ -32,7 +32,14 @@ listeners=http://0.0.0.0:8081
 # (Note that you cannot mix the two modes; use this mode only on new deployments or by shutting down
 # all instances, switching to the new configuration, and then starting the schema registry
 # instances again.)
-kafkastore.bootstrap.servers={{ kafka_service_ip_address }}:9092
+# Using without PLAINTEXT gives:
+# No supported Kafka endpoints are configured.
+# Either kafkastore.bootstrap.servers must have at least one endpoint matching kafkastore.security.protocol or
+# broker endpoints loaded from ZooKeeper must have at least one endpoint matching kafkastore.security.protocol
+#
+# kafkastore.bootstrap.servers={{ kafka_service_ip_address }}:9092
+kafkastore.bootstrap.servers=PLAINTEXT://{{ kafka_service_ip_address }}:9092
+
 
 # The name of the topic to store schemas in
 kafkastore.topic=_schemas
