@@ -287,6 +287,8 @@
 ### Templating config files
 ###
 
+### /etc/kafka
+
   - name: Copying server.properties
     template:
       src: templates/kafka/server.properties.j2
@@ -317,6 +319,29 @@
     tags:
       - kafka-configfiles
 
+  - name: Copying connect-distributed.properties
+    template:
+      src: templates/kafka/connect-distributed.properties.j2
+      dest: /etc/kafka/connect-distributed.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying connect-standalone.properties
+    template:
+      src: templates/kafka/connect-standalone.properties.j2
+      dest: /etc/kafka/connect-standalone.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+
+### /etc/kafka-rest
+
   - name: Copying kafka-rest.properties
     template:
       src: templates/kafka-rest/kafka-rest.properties.j2
@@ -327,6 +352,51 @@
     tags:
       - kafka-configfiles
 
+
+### /etc/camus
+
+  - name: Copying camus.properties
+    template:
+      src: templates/camus/camus.properties.j2
+      dest: /etc/camus/camus.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+
+### /etc/schema-registry
+
+  - name: Copying connect-avro-distributed.properties
+    template:
+      src: templates/schema-registry/connect-avro-distributed.properties.j2
+      dest: /etc/schema-registry/connect-avro-distributed.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying connect-avro-standalone.properties
+    template:
+      src: templates/schema-registry/connect-avro-standalone.properties.j2
+      dest: /etc/schema-registry/connect-avro-standalone.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
+
+  - name: Copying schema-registry.properties
+    template:
+      src: templates/schema-registry/schema-registry.properties.j2
+      dest: /etc/schema-registry/schema-registry.properties
+      owner: "{{ kafka_username }}"
+      group: "{{ kafka_groupname }}"
+      mode: 0755
+    tags:
+      - kafka-configfiles
 
 
 #############################################################################

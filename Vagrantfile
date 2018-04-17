@@ -23,7 +23,6 @@ Vagrant.configure("2") do |config|
     end # End of "kafka_node_01.vm.provider"
   end   # End of config.vm.define "kafka_node_01"
 
-
     # Run the same playbook on all hosts
     # :vars section provided as example on passing variables to
     # ansible in possible future versions
