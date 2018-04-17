@@ -108,3 +108,6 @@ $ <path-to-confluent>/bin/connect-distributed \
 Alternatively, use the custom-made controlscript that uses abovementioned supported startup methods.
 
 This script will be installed as:  /etc/init.d/kafka-control.sh
+
+Remark: run the script /etc/init.d/kafka-control.sh as root. Within the script there are su statements
+to assure that actions are run as the appropiate user.
