@@ -4,7 +4,7 @@
 #
 
 # The Kafka brokers to connect to, format: kafka.brokers=host1:port,host2:port,host3:port
-kafka.brokers={{ kafka_server_listeners }}:9092
+kafka.brokers={{ kafka_service_ip_address }}:9092
 
 # The job name.
 camus.job.name=Camus Job

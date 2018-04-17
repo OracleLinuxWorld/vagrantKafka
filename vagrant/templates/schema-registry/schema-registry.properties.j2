@@ -23,7 +23,7 @@ listeners=http://0.0.0.0:8081
 # (see zookeeper docs for details).
 # This is a comma separated host:port pairs, each corresponding to a zk
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
-kafkastore.connection.url={{ kafka_server_listeners }}:2181
+kafkastore.connection.url={{ kafka_service_ip_address }}:2181
 
 # Alternatively, Schema Registry can now operate without Zookeeper, handling all coordination via
 # Kafka brokers. Use this setting to specify the bootstrap servers for your Kafka cluster and it
