@@ -116,18 +116,34 @@
 
   - name: Installing Confluent Platform
     yum:
-       name: "{{ item }}"
-       state: latest
-       update_cache: yes
+      name: "{{ item }}"
+      state: latest
+      update_cache: yes
     with_items:
-       - confluent-platform-oss-2.11
-       - which
-       - curl
-       - java-1.8.0-openjdk-headless
+      - confluent-platform-oss-2.11
+      - which
+      - curl
+      - java-1.8.0-openjdk-headless
     when:
-       - ansible_os_family == "RedHat"
-       - ansible_distribution_major_version == "7"
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
 
+
+#############################################################################
+###
+### Install Additional packages
+###
+
+  - name: Installing additional packages
+    yum:
+      name: "{{ item }}"
+      state: latest
+      update_cache: yes
+    with_items:
+      - jq
+    when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
 
 #############################################################################
 ###
