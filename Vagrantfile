@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
     # Set auto_update to false
     # This will not automatically update the guest additions on VM boot
     # Set to "true" if you want auto-updates
-    config.vbguest.auto_update = false
+    # config.vbguest.auto_update = false
 
     # Run the same playbook on all hosts
     # :vars section provided as example on passing variables to
