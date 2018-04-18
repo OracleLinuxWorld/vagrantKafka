@@ -474,10 +474,22 @@
     tags:
       - kafka-systemctl
 
+  - name: Copy systemctl service file kafka-connector.service
+    copy:
+      src: files/usr/lib/systemd/system/kafka-connector.service
+      dest: /usr/lib/systemd/system/kafka-connector.service
+      mode: 0755
+      owner: root
+      group: root
+    when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"
+    tags:
+      - kafka-systemctl
 
 #############################################################################
 ###
-### Enabling and starting Kafka at boot
+### Enabling and starting Kafka services at boot
 ###
 
   - debug:
@@ -494,6 +506,7 @@
        - kafka
        - kafka-rest
        - schema-registry
+       - kafka-connector
     when:
        - ansible_os_family == "RedHat"
        - ansible_distribution_major_version == "7"

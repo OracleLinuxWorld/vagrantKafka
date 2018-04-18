@@ -1,6 +1,6 @@
 [Unit]
-Description=Confluent Kafka REST endpoint
-After=syslog.target network.target zookeeper.target
+Description=Confluent Kafka Connector Distributed services
+After=syslog.target network.target zookeeper.target kafka-rest.target
 
 [Service]
 LimitMEMLOCK=infinity
@@ -12,8 +12,8 @@ LimitNOFILE=65535
 RemainAfterExit=yes
 User=root
 Group=root
-ExecStart=/etc/init.d/kafka-control start-kafka-rest
-ExecStop=/etc/init.d/kafka-control stop-kafka-rest
+ExecStart=/etc/init.d/kafka-control start-kafka-connect
+ExecStop=/etc/init.d/kafka-control stop
 
 [Install]
-WantedBy=multi-user.target kafka.target kafka-connector.target
+WantedBy=multi-user.target
