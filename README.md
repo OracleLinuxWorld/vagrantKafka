@@ -36,7 +36,16 @@ The error output from the command was:
 Using the VBOX image directly from Oracle instead of the Vagrantup.com image
 gives us the VirtualBox utilities installed by default.
 
+PS: There have been problems with the Vagrant plugin "vagrant-vbguest".
+If you experience issues with the VirtualBox guest additions not being updated properly
+and therefore e.g. ansible_local can not run because of a missing /vagrant shared folder please
+consider removing the Vagrant plugin "vagrant-vbguest" as follows:
 
+``` vagrant plugin uninstall vagrant-vbguest
+Uninstalling the 'vagrant-vbguest' plugin...
+Successfully uninstalled micromachine-2.0.0
+Successfully uninstalled vagrant-vbguest-0.15.1
+```
 
 # Regarding port numbers that Kafka uses
 
