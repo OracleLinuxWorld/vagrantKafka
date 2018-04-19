@@ -3,9 +3,11 @@ Vagrant.configure("2") do |config|
   # Define first Kafka node
   config.vm.define "kafka_node_01" do |kafka_node_01|
     kafka_node_01.vm.synced_folder "./vagrant", "/vagrant"
-    kafka_node_01.vm.box = "ol7-latest"
+    #kafka_node_01.vm.box = "ol7-latest"
+    kafka_node_01.vm.box = "ol74"
     kafka_node_01.vm.hostname = 'kafka-node-01'
-    kafka_node_01.vm.box_url = "https://yum.oracle.com/boxes/oraclelinux/latest/ol7-latest.box"
+    #kafka_node_01.vm.box_url = "https://yum.oracle.com/boxes/oraclelinux/latest/ol7-latest.box"
+    kafka_node_01.vm.box_url = "http://yum.oracle.com/boxes/oraclelinux/ol74/ol74.box"
     kafka_node_01.vm.network :"private_network", type: "dhcp"
     kafka_node_01.vm.network "forwarded_port", guest: 9092, host: 9092, protocol: "tcp"
     kafka_node_01.vm.network "forwarded_port", guest: 9021, host: 9021, protocol: "tcp"
