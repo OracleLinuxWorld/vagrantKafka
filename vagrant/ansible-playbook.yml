@@ -91,8 +91,8 @@
     yum_repository:
       name: Confluent.dist
       description: Confluent repository (dist)
-      baseurl: https://packages.confluent.io/rpm/4.0/7
-      gpgkey: https://packages.confluent.io/rpm/4.0/archive.key
+      baseurl: https://packages.confluent.io/rpm/4.1/7
+      gpgkey: https://packages.confluent.io/rpm/4.1/archive.key
       file: confluent
       gpgcheck: yes
       enabled: yes
@@ -102,8 +102,8 @@
     yum_repository:
       name: Confluent
       description: Confluent repository
-      baseurl: https://packages.confluent.io/rpm/4.0
-      gpgkey: https://packages.confluent.io/rpm/4.0/archive.key
+      baseurl: https://packages.confluent.io/rpm/4.1
+      gpgkey: https://packages.confluent.io/rpm/4.1/archive.key
       file: confluent
       gpgcheck: yes
       enabled: yes
