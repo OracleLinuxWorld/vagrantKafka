@@ -110,8 +110,11 @@ case "${1:-''}" in
         su -l {{ kafka_username }} -c 'curl -s http://127.0.0.1:8083/connector-plugins | jq '.''
         ;;
 
-
-
+  'get-topics')
+        echo "Get topics..."
+        echo ""
+        su -l {{ kafka_username }} -c 'curl -s http://127.0.0.1:8082/topics | jq '.''
+        ;;
 
 
 
@@ -144,6 +147,8 @@ case "${1:-''}" in
   echo ""
   echo "check-rest-api            : Check if the REST API is functioning."
   echo "check-connector-plugins   : Check which connector plugins are available."
+  echo ""
+  echo "get-topics                : Get list of topics."
 	exit 1
 	;;
 esac
