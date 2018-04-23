@@ -25,6 +25,34 @@ Vagrant.configure("2") do |config|
     end # End of "kafka_node_01.vm.provider"
   end   # End of config.vm.define "kafka_node_01"
 
+
+
+  # Define Kafka worker node
+  config.vm.define "kafka_workernode_01" do |kafka_workernode_01|
+    kafka_workernode_01.vm.synced_folder "./vagrant", "/vagrant"
+    #kafka_node_01.vm.box = "ol7-latest"
+    kafka_workernode_01.vm.box = "ol74"
+    kafka_workernode_01.vm.hostname = 'kafka_workernode_01'
+    #kafka_node_01.vm.box_url = "https://yum.oracle.com/boxes/oraclelinux/latest/ol7-latest.box"
+    kafka_workernode_01.vm.box_url = "http://yum.oracle.com/boxes/oraclelinux/ol74/ol74.box"
+    kafka_workernode_01.vm.network :"private_network", type: "dhcp"
+    kafka_workernode_01.vm.network "forwarded_port", guest: 9092, host: 9092, protocol: "tcp"
+    kafka_workernode_01.vm.network "forwarded_port", guest: 9021, host: 9021, protocol: "tcp"
+    kafka_workernode_01.vm.network "forwarded_port", guest: 8083, host: 8083, protocol: "tcp"
+    kafka_workernode_01.vm.network "forwarded_port", guest: 8082, host: 8082, protocol: "tcp"
+    kafka_workernode_01.vm.network "forwarded_port", guest: 8081, host: 8081, protocol: "tcp"
+    kafka_workernode_01.vm.network "forwarded_port", guest: 2181, host: 2181, protocol: "tcp"
+    kafka_workernode_01.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+      v.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+      v.customize ["modifyvm", :id, "--usb", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
+      v.customize ["modifyvm", :id, "--name", "kafka_node_01"]
+    end # End of "kafka_workernode_01.vm.provider"
+  end   # End of config.vm.define "kafka_workernode_01"
+
+
     # Set auto_update to false
     # This will not automatically update the guest additions on VM boot
     # Set to "true" if you want auto-updates
@@ -37,7 +65,7 @@ Vagrant.configure("2") do |config|
           ansible.verbose = "v"
           ansible.playbook = "ansible-playbook.yml"
           ansible.groups = {
-            "kafkabrokers" => ["kafka_node_01"],
+            "kafkabrokers" => ["kafka_node_01", "kafka_workernode_01"],
             "kafkabrokers:vars" => {"variable1" => "example1",
                                     "variable2" => "example2"}
           }
