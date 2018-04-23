@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
     kafka_workernode_01.vm.synced_folder "./vagrant", "/vagrant"
     #kafka_node_01.vm.box = "ol7-latest"
     kafka_workernode_01.vm.box = "ol74"
-    kafka_workernode_01.vm.hostname = 'kafka_workernode_01'
+    kafka_workernode_01.vm.hostname = 'kafka-workernode-01'
     #kafka_node_01.vm.box_url = "https://yum.oracle.com/boxes/oraclelinux/latest/ol7-latest.box"
     kafka_workernode_01.vm.box_url = "http://yum.oracle.com/boxes/oraclelinux/ol74/ol74.box"
     kafka_workernode_01.vm.network :"private_network", type: "dhcp"
