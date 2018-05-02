@@ -2,7 +2,8 @@ Vagrant.configure("2") do |config|
 
   # Define first Kafka node
   config.vm.define "kafka_node_01" do |kafka_node_01|
-    kafka_node_01.vm.synced_folder "./vagrant", "/vagrant"
+    # synced_folder only used in ansible_local setting
+    # kafka_node_01.vm.synced_folder "./vagrant", "/vagrant"
     kafka_node_01.vm.box = "ol7-latest"
     kafka_node_01.vm.hostname = 'kafka-node-01'
     kafka_node_01.vm.box_url = "https://yum.oracle.com/boxes/oraclelinux/latest/ol7-latest.box"
@@ -27,7 +28,8 @@ Vagrant.configure("2") do |config|
 
   # Define Kafka worker node
   config.vm.define "kafka_workernode_01" do |kafka_workernode_01|
-    kafka_workernode_01.vm.synced_folder "./vagrant", "/vagrant"
+    # synced_folder only used in ansible_local setting
+    # kafka_workernode_01.vm.synced_folder "./vagrant", "/vagrant"
     kafka_workernode_01.vm.box = "ol7-latest"
     kafka_workernode_01.vm.hostname = 'kafka-workernode-01'
     kafka_workernode_01.vm.box_url = "https://yum.oracle.com/boxes/oraclelinux/latest/ol7-latest.box"
@@ -44,18 +46,15 @@ Vagrant.configure("2") do |config|
   end   # End of config.vm.define "kafka_workernode_01"
 
 
-    # Set auto_update to false
-    # This will not automatically update the guest additions on VM boot
-    # Set to "true" if you want auto-updates
-    # config.vbguest.auto_update = false
-
     # Run the same playbook on all hosts
     # :vars section provided as example on passing variables to
     # ansible in possible future versions
-    config.vm.provision "ansible_local" do |ansible|
+    config.vm.provision "ansible" do |ansible|
           ansible.verbose = "v"
-          ansible.playbook = "ansible-playbook.yml"
+          ansible.playbook = "vagrant/ansible-playbook.yml"
+          ansible.limit = "all"
           ansible.groups = {
+            "all" => ["kafka_node_01", "kafka_workernode_01"],
             "kafkabrokers" => ["kafka_node_01", "kafka_workernode_01"],
             "kafkabrokers:vars" => {"variable1" => "example1",
                                     "variable2" => "example2"}
