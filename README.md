@@ -1,51 +1,6 @@
 # vagrantKafka
-Vagrant to setup Kafka on Oracle Linux
+Vagrant VM set to run Confluent Kafka on Oracle Linux
 
-
-# Ansible in guest VM
-
-Because this Vagrant system is developed to work on both Windows and Mac
-we will need Ansible to be available in the guest VM (Vagrant method: ansible_local).
-
-Ansible will be installed on the guest VM automatically.
-
-
-# VirtualBox file transfer mechanism
-
-To be able to use the VirtualBox default transfer mechanism for the
-Ansible playbooks we need the VirtualBox utilities installed on the guest VM.
-
-When using the default VirtualBox transfer mechanism to transfer the Ansible playbook files
-to the Vagrant guest machine *without* the VirtualBox utilities the following error occurs:
-
-```
-Vagrant was unable to mount VirtualBox shared folders. This is usually
-because the filesystem "vboxsf" is not available. This filesystem is
-made available via the VirtualBox Guest Additions and kernel module.
-Please verify that these guest additions are properly installed in the
-guest. This is not a bug in Vagrant and is usually caused by a faulty
-Vagrant box. For context, the command attempted was:
-
-mount -t vboxsf -o uid=1000,gid=1000 vagrant /vagrant
-
-The error output from the command was:
-
-/sbin/mount.vboxsf: mounting failed with the error: No such device
-```
-
-Using the VBOX image directly from Oracle instead of the Vagrantup.com image
-gives us the VirtualBox utilities installed by default.
-
-PS: There have been problems with the Vagrant plugin "vagrant-vbguest".
-If you experience issues with the VirtualBox guest additions not being updated properly
-and therefore e.g. ansible_local can not run because of a missing /vagrant shared folder please
-consider removing the Vagrant plugin "vagrant-vbguest" as follows:
-
-``` vagrant plugin uninstall vagrant-vbguest
-Uninstalling the 'vagrant-vbguest' plugin...
-Successfully uninstalled micromachine-2.0.0
-Successfully uninstalled vagrant-vbguest-0.15.1
-```
 
 # Regarding port numbers that Kafka uses
 
@@ -114,9 +69,13 @@ $ <path-to-confluent>/bin/connect-distributed \
 <path-to-confluent>/etc/schema-registry/connect-avro-distributed.properties
 
 
-Alternatively, use the custom-made controlscript that uses abovementioned supported startup methods.
+Alternatively, use the Confluent controlscripts.
+The following services are available for use with systemctl:
 
-This script will be installed as:  /etc/init.d/kafka-control
-
-Remark: run the script /etc/init.d/kafka-control as root. Within the script there are su statements
-to assure that actions are run as the appropiate user.
+* confluent-control-center
+* confluent-kafka
+* confluent-zookeeper
+* confluent-kafka-connect
+* confluent-ksql
+* confluent-kafka-rest
+* confluent-schema-registry
