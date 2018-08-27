@@ -1,0 +1,69 @@
+###
+### Generic variables
+### Applicable to ALL roles
+###
+
+# On which interface are we going to connect to the Kafka kafkabrokers
+#
+# PS: the hostvars behaviour as used below might be deprecated in a later Ansible 2.5.x release
+# When a suitable vars dict method is available then rewrite the lines below
+#
+kafka_mgmt_interface: "eth0"
+kafka_service_interface: "eth1"
+kafka_mgmt_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_mgmt_interface].ipv4.address }}"
+kafka_service_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_service_interface].ipv4.address }}"
+
+# Used for creating Unix user and setting permissions
+# Is also the userid that owns the processes of the whole stack
+kafka_groupname: "kafka"
+kafka_username: "kafka"
+
+# Network ports
+port_kafka_broker: 9092
+port_kafka_connect: 8083
+port_kafka_rest_proxy: 8082
+port_kafka_schema_registry: 8081
+port_zookeeper: 2181
+
+### /etc/kafka/server.properties
+#
+# broker.id:  will be dynamically derived from the hostname
+#
+# num.partitions: The default number of log partitions per topic.
+# More partitions allow greater parallelism for consumption.
+kafka_server_num_partitions: 2
+#
+# listeners: The address the socket server listens on.
+kafka_server_listeners: "PLAINTEXT://:9092"
+#
+# zookeeper.connect: Zookeeper connection string (see zookeeper docs for details).
+# This is a comma separated host:port pairs, each corresponding to a zk
+# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
+kafka_server_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
+#
+# NOTE: Confluent Proactive Support - requires support contract
+kafka_server_confluent_support_metrics_enable: "false"
+
+
+### /etc/kafka/consumer.properties
+#
+kafka_consumer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
+kafka_consumer_group_id: "test-consumer-group"
+
+# /etc/kafka/producer.properties
+#
+kafka_producer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
+kafka_producer_compression_type: "snappy"
+
+# /etc/kafka-rest/kafka-rest.properties
+#
+kafka_rest_id: "kafka-rest-test-server"
+kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
+kafka_rest_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
+kafka_rest_bootstrap_servers: "PLAINTEXT://{{ kafka_service_ip_address }}:9092"
+
+wait_for_timeout: 180
+
+#############################
+# Define list of BROKER nodes
+kafka_network_hosts:         "{{ groups['kafka_brokers'] | to_json }}"
