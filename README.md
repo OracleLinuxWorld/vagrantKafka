@@ -2,6 +2,16 @@
 Vagrant VM set to run Confluent Kafka on Oracle Linux
 
 
+# Regarding Ansible
+Please run the following commands:
+```
+vagrant up
+ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml
+```
+
+The initial Vagrant step does *not* provision the VMs.
+You need to explicitly run 'ansible-playbook'.
+
 # Regarding port numbers that Kafka uses
 
 ```
