@@ -1,10 +1,9 @@
-- hosts: kafkabrokers
+- hosts: kafka_all
   remote_user: vagrant
   become: true
   become_user: root
   become_method: sudo
   gather_facts: true
-
 
 #############################################################################
 ###
@@ -28,17 +27,34 @@
     kafka_groupname: "kafka"
     kafka_username: "kafka"
 
-    # /etc/kafka/server.properties
+    # Network ports
+    port_kafka_broker: 9092
+    port_kafka_connect: 8083
+    port_kafka_rest_proxy: 8082
+    port_kafka_schema_registry: 8081
+    port_zookeeper: 2181
+
+    ### /etc/kafka/server.properties
     #
-    # Kafka broker.id (kafka_server_broker_id) will be dynamically derived from the hostname
+    # broker.id:  will be dynamically derived from the hostname
+    #
+    # num.partitions: The default number of log partitions per topic.
+    # More partitions allow greater parallelism for consumption.
     kafka_server_num_partitions: 2
+    #
+    # listeners: The address the socket server listens on.
     kafka_server_listeners: "PLAINTEXT://:9092"
+    #
+    # zookeeper.connect: Zookeeper connection string (see zookeeper docs for details).
+    # This is a comma separated host:port pairs, each corresponding to a zk
+    # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
     kafka_server_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
     #
     # NOTE: Confluent Proactive Support - requires support contract
     kafka_server_confluent_support_metrics_enable: "false"
 
-    # /etc/kafka/consumer.properties
+
+    ### /etc/kafka/consumer.properties
     #
     kafka_consumer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
     kafka_consumer_group_id: "test-consumer-group"
@@ -63,11 +79,21 @@
 
   tasks:
 
-  - name: All the hosts known in the inventory file group kafkabrokers
+  - name: All the hosts known in the inventory file group kafka_brokers
     debug:
       msg="{{ item }}"
     with_items:
-      - "{{ groups['kafkabrokers'] }}"
+      - "{{ groups['kafka_brokers'] }}"
+    when:
+      - inventory_hostname in groups['kafka_brokers']
+
+  - name: All the hosts known in the inventory file group kafka_worker_nodes
+    debug:
+      msg="{{ item }}"
+    with_items:
+      - "{{ groups['kafka_worker_nodes'] }}"
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
 
   - name: Kafka Service IP address
     debug:
@@ -81,6 +107,14 @@
     with_items:
       - "{{ kafka_mgmt_ip_address }}"
 
+  - name: Setting host fact for service IP address
+    set_fact:
+      service_ip: >
+        {{ hostvars[inventory_hostname]['ansible_' + kafka_service_interface].ipv4.address }}
+
+  - name: Display fact
+    debug:
+      msg="{{ service_ip }}"
 
 #############################################################################
 ###
@@ -256,10 +290,14 @@
     register: kafka_server_broker_id
     tags:
       - kafka-broker-id
+    when:
+      - inventory_hostname in groups['kafka_brokers']
 
   - name: Give broker-id number
     debug:
       msg: "Broker ID is {{ kafka_server_broker_id.stdout }}"
+    when:
+      - inventory_hostname in groups['kafka_brokers']
 
 
 #############################################################################
@@ -278,6 +316,8 @@
       mode: 0755
     tags:
       - kafka-configfiles
+    when:
+      - inventory_hostname in groups['kafka_brokers']
 
   - name: Copying producer.properties
     template:
@@ -379,8 +419,6 @@
       - kafka-configfiles
 
 
-
-
 #############################################################################
 ###
 ### Create control script in /etc/init.d
@@ -395,25 +433,6 @@
      mode: 0755
     tags:
       - kafka-controlscript
-
-#  - name: Updating startup sequence
-#    debug:
-#      msg: "Getting the various services to start at boot time..."
-#
-#  - name: Setting up execute permissions on rc local script
-#    file:
-#      path: "/etc/rc.d/rc.local"
-#      mode: u+x
-#      state: touch
-#    tags:
-#      - kafka-controlscript
-#
-#  - name: Inserting control script entry in rc local script
-#    blockinfile:
-#      dest: "/etc/rc.d/rc.local"
-#      content: '/etc/init.d/kafka-control start'
-#    tags:
-#      - kafka-controlscript
 
 
 #############################################################################
@@ -460,7 +479,6 @@
     tags:
       - kafka-systemctl
 
-
   - name: Copy systemctl service file zookeeper.service
     copy:
       src: files/usr/lib/systemd/system/zookeeper.service
@@ -487,13 +505,16 @@
     tags:
       - kafka-systemctl
 
+
 #############################################################################
 ###
 ### Enabling and starting Kafka services at boot
 ###
 
   - debug:
-      msg: "Getting the various Kafka services up and running..."
+      msg: "Starting services for Kafka brokers..."
+    when:
+      - inventory_hostname in groups['kafka_brokers']
 
   - name: Start and enable services at boot time
     systemd:
@@ -510,7 +531,32 @@
     when:
        - ansible_os_family == "RedHat"
        - ansible_distribution_major_version == "7"
+       - inventory_hostname in groups['kafka_brokers']
     tags:
       - kafka-systemctl
+
+
+  - debug:
+      msg: "Starting services for Kafka worker nodes..."
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
+
+  - name: Start and enable services at boot time
+    systemd:
+       name: "{{ item }}"
+       state: started
+       enabled: True
+       daemon_reload: yes
+    with_items:
+       - zookeeper
+       - kafka-rest
+       - kafka-connector
+    when:
+       - ansible_os_family == "RedHat"
+       - ansible_distribution_major_version == "7"
+       - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+       - kafka-systemctl
+
 
 #############################################################################
