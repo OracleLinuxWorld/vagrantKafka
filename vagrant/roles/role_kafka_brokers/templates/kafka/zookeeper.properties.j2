@@ -18,3 +18,11 @@ dataDir={{ zookeeper_datadir }}
 clientPort=2181
 # disable the per-ip limit on the number of connections since this is a non-production config
 maxClientCnxns=0
+
+# Additional statements to create multi-node Zookeeper ensemble
+initLimit={{ kafka_server_zookeeper_initLimit }}
+syncLimit={{ kafka_server_zookeeper_syncLimit }}
+
+{% for server in groups['kafka_brokers'] %}
+server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}
+{% endfor %}

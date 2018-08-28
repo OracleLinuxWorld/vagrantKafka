@@ -15,7 +15,10 @@ kafka_server_listeners: "PLAINTEXT://:9092"
 # zookeeper.connect: Zookeeper connection string (see zookeeper docs for details).
 # This is a comma separated host:port pairs, each corresponding to a zk
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
-kafka_server_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
+kafka_server_zookeeper_initLimit: "5"
+kafka_server_zookeeper_syncLimit: "2"
+kafka_server_zookeeper_leaderport: "2888"
+kafka_server_zookeeper_electionport: "3888"
 
 #
 # NOTE: Confluent Proactive Support - requires support contract
