@@ -1,0 +1,4 @@
+### Schema registry
+
+# The name of the topic to store schemas in
+schema_registry_kafkastore_topic: "_schemas"

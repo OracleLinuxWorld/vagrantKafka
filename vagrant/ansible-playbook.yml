@@ -12,3 +12,8 @@
 - import_playbook: ansible-playbook_import_kafka_brokers.yml
   tags:
     - kafkabrokers
+
+# 3) Setting up Kafka Shcema registry
+- import_playbook: ansible-playbook_import_kafka_schema_registry.yml
+  tags:
+    - kafka_schema_registry

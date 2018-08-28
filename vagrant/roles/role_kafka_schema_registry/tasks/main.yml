@@ -1,0 +1,90 @@
+###
+### Templating config files
+###
+
+### /etc/schema-registry
+
+  - name: Copying connect-avro-distributed.properties
+    template:
+      src: templates/schema-registry/connect-avro-distributed.properties.j2
+      dest: /etc/schema-registry/connect-avro-distributed.properties
+      mode: 0755
+    tags:
+      - kafka-configfiles
+      - kafka-schema-registry
+
+  - name: Copying connect-avro-standalone.properties
+    template:
+      src: templates/schema-registry/connect-avro-standalone.properties.j2
+      dest: /etc/schema-registry/connect-avro-standalone.properties
+      mode: 0755
+    tags:
+      - kafka-configfiles
+      - kafka-schema-registry
+
+  - name: Copying schema-registry.properties
+    template:
+      src: templates/schema-registry/schema-registry.properties.j2
+      dest: /etc/schema-registry/schema-registry.properties
+      mode: 0755
+    tags:
+      - kafka-configfiles
+      - kafka-schema-registry
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#############################################################################
+###
+### Configuring applications
+###
+
+#  - name: Using broker id as ZooKeeper myID in {{ zookeeper_datadir }}/myid
+#    shell: echo $HOSTNAME | sed s/\_/\-/g | cut -d'-' -f3 | sed s/^0*// > {{ zookeeper_datadir }}/myid
+#    tags:
+#      - kafka-broker-id
+#      - kafka-zookeeper
+#    when:
+#      - inventory_hostname in groups['kafka_brokers']
+
+
+#############################################################################
+###
+### Enabling and starting Kafka services at boot
+###
+
+  - debug:
+      msg: "Starting services for Kafka schema registry..."
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-schema-registry
+
+  - name: Start and enable services at boot time
+    systemd:
+       name: "{{ item }}"
+       state: started
+       enabled: True
+    with_items:
+       - confluent-schema-registry
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-schema-registry
