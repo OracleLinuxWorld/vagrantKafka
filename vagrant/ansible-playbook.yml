@@ -4,6 +4,11 @@
     - sethostname
 
 # 1) Setting permissions on Kafka dirs
-- import_playbook: ansible-playbook_import_set_permissions.yml
+#- import_playbook: ansible-playbook_import_set_permissions.yml
+#  tags:
+#    - setpermissions
+
+# 2) Setting up Kafka brokers
+- import_playbook: ansible-playbook_import_kafka_brokers.yml
   tags:
-    - setpermissions
+    - kafkabrokers
