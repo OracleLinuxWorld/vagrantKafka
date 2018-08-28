@@ -1,6 +1,15 @@
 # vagrantKafka
-Vagrant VM set to run Confluent Kafka on Oracle Linux
+Vagrant set of VMs to run Confluent Kafka on Oracle Linux.
 
+The setup that will be deployed is the following:
+* 3x Kafka brokers running the following components:
+  * the ZooKeeper ensemble and
+  * Kafka broker instances
+
+* 2x Kafka worker nodes running the following components:
+  * Kafka Connect
+  * Kafka REST proxy
+  * Kafka Schema Registry
 
 # Regarding Ansible
 Please run the following commands:
@@ -19,10 +28,14 @@ Component	                          Port
 Apache Kafka brokers (plain text)	  9092
 Confluent Control Center	          9021
 Kafka Connect REST API	            8083
-REST Proxy	                        8082
+REST Proxy                          8082
 Schema Registry REST API	          8081
-ZooKeeper	                          2181
+ZooKeeper client port               2181
+ZooKeeper leader port               2888
+Zookeeper election port             3888
 ```
+
+All these ports need to be opened up between all Kafka nodes.
 
 
 # Note for MobaXterm users!
