@@ -15,8 +15,8 @@ kafka_service_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_se
 
 # Used for creating Unix user and setting permissions
 # Is also the userid that owns the processes of the whole stack
-kafka_groupname: "kafka"
-kafka_username: "kafka"
+kafka_groupname: "cp-kafka"
+kafka_username: "confluent"
 
 # Network ports
 port_kafka_broker: 9092
@@ -25,24 +25,8 @@ port_kafka_rest_proxy: 8082
 port_kafka_schema_registry: 8081
 port_zookeeper: 2181
 
-### /etc/kafka/server.properties
-#
-# broker.id:  will be dynamically derived from the hostname
-#
-# num.partitions: The default number of log partitions per topic.
-# More partitions allow greater parallelism for consumption.
-kafka_server_num_partitions: 2
-#
-# listeners: The address the socket server listens on.
-kafka_server_listeners: "PLAINTEXT://:9092"
-#
-# zookeeper.connect: Zookeeper connection string (see zookeeper docs for details).
-# This is a comma separated host:port pairs, each corresponding to a zk
-# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
-kafka_server_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
-#
-# NOTE: Confluent Proactive Support - requires support contract
-kafka_server_confluent_support_metrics_enable: "false"
+
+zookeeper_datadir: "/var/lib/zookeeper"
 
 
 ### /etc/kafka/consumer.properties
@@ -66,4 +50,4 @@ wait_for_timeout: 180
 
 #############################
 # Define list of BROKER nodes
-kafka_network_hosts:         "{{ groups['kafka_brokers'] | to_json }}"
+kafka_brokers:         "{{ groups['kafka_brokers'] | to_json }}"
