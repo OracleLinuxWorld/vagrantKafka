@@ -13,7 +13,12 @@
   tags:
     - kafkabrokers
 
-# 3) Setting up Kafka Shcema registry
+# 3) Setting up Kafka Schema registry
 - import_playbook: ansible-playbook_import_kafka_schema_registry.yml
   tags:
     - kafka_schema_registry
+
+# 4) Setting up Kafka REST proxy
+- import_playbook: ansible-playbook_import_kafka_rest_proxy.yml
+  tags:
+    - kafka_rest_proxy

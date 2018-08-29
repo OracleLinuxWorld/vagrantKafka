@@ -39,12 +39,7 @@ kafka_consumer_group_id: "test-consumer-group"
 kafka_producer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
 kafka_producer_compression_type: "snappy"
 
-# /etc/kafka-rest/kafka-rest.properties
-#
-kafka_rest_id: "kafka-rest-test-server"
-kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
-kafka_rest_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
-kafka_rest_bootstrap_servers: "PLAINTEXT://{{ kafka_service_ip_address }}:9092"
+
 
 wait_for_timeout: 180
 

@@ -1,4 +1,22 @@
-### Schema registry
+###
+### role_kafka_schema_registry
+###
 
+# /etc/schema-registry/schema-registry.properties
 # The name of the topic to store schemas in
 schema_registry_kafkastore_topic: "_schemas"
+
+
+
+###
+### role_kafka_rest_proxy
+###
+
+# /etc/kafka-rest/kafka-rest.properties
+#
+kafka_rest_id: "kafka-rest-test-server"
+kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
+
+# probably unused
+kafka_rest_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
+kafka_rest_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PLAINTEXT://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
