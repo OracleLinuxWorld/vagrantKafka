@@ -25,3 +25,19 @@ kafka_rest_zookeeper_connect: "{% for zknode in groups['kafka_brokers'] %}{{ zkn
 kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}PLAINTEXT://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
 kafka_rest_listeners: http://0.0.0.0:{{port_kafka_rest_proxy}}
+
+###
+### role_kafka_connect_MySQL
+###
+
+#Username password for schema used by the JDBC connector
+jdbc_username:      'admin'
+jdbc_password:      'admin'
+jdbc_database:      'hello_world'
+
+#Hostname and port for database
+jdbc_host:          'localhost'
+jdbc_port:          3306
+
+#The name of the MySQL connector
+mysql_connector_name:   'jdbc_source_mysql'
