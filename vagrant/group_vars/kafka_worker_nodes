@@ -6,7 +6,7 @@
 # The name of the topic to store schemas in
 schema_registry_kafkastore_topic: "_schemas"
 
-kafka_kafkastore_bootstrap_servers: 
+kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PLAINTEXT://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
 
 
