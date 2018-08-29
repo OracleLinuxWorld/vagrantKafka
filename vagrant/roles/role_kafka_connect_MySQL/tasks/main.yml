@@ -18,7 +18,7 @@
 
 - name: Move MySQL to correct folder
   copy:
-    src: /tmp/mysql-connector-java-5.1.47.jar
+    src: /tmp/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar
     dest: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.47.jar
   when: MySQL_connector.stat.exists == False
 
