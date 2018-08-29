@@ -38,7 +38,7 @@ listeners=http://0.0.0.0:8081
 # broker endpoints loaded from ZooKeeper must have at least one endpoint matching kafkastore.security.protocol
 
 
-kafkastore.bootstrap.servers={% for node in groups['kafka_brokers'] %}PLAINTEXT://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}
+kafkastore.bootstrap.servers={{ kafka_kafkastore_bootstrap_servers }}
 
 
 # The name of the topic to store schemas in
