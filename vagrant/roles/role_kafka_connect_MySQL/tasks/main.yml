@@ -1,14 +1,15 @@
 #############################################################################
+
 ###
 ### Add MySql connector
 ###
 
-- name: Check if MySQL connector is already present
+- name: Check if MySQL connector jar is already present
   stat:
     path: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.47.jar
   register: MySQL_connector
 
-- name: Download and unzip MySQL connector
+- name: Download and unzip MySQL connector jar
   unarchive:
     src: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.zip
     dest: /usr/local/bin
@@ -20,3 +21,20 @@
     src: /tmp/mysql-connector-java-5.1.47.jar
     dest: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.47.jar
   when: MySQL_connector.exists == False
+
+- name: Template MySQL connect json
+  template:
+    src: /templates/kafka-connect-jdbc-source.json.j2
+    dest: /tmp/kafka-connect-jdbc-source.json
+
+# $ curl -X POST -H "Content-Type: application/json" --data '{"name": "local-file-sink", "config": {"connector.class":"FileStreamSinkConnector", "tasks.max":"1", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
+- name: Create MySQL connector
+  uri:
+    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors"
+    method: POST
+    user: your_username
+    password: your_pass
+    body: "{{ lookup('file','/tmp/kafka-connect-jdbc-source.json') }}"
+    force_basic_auth: yes
+    status_code: 201
+    body_format: json
