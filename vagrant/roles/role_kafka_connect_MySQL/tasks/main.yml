@@ -14,23 +14,20 @@
     src: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.zip
     dest: /tmp
     remote_src: yes
+    mode: 0775
   when: MySQL_connector.stat.exists == False
 
 - name: Move MySQL to correct folder
   copy:
     src: /tmp/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar
     dest: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.47.jar
+    remote_src: yes
   when: MySQL_connector.stat.exists == False
-
-- name: Template MySQL connect json
-  template:
-    src: /templates/kafka-connect-jdbc-source.json.j2
-    dest: /tmp/kafka-connect-jdbc-source.json
 
 - name: Create MySQL connector
   uri:
     url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors"
     method: POST
-    body: "{{ lookup('file','/tmp/kafka-connect-jdbc-source.json') }}"
+    body: "{{ lookup('file','templates/kafka-connect-jdbc-source.json.j2') }}"
     status_code: 201
     body_format: json
