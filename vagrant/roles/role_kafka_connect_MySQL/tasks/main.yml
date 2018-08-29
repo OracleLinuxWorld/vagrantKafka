@@ -3,8 +3,20 @@
 ### Add MySql connector
 ###
 
-- name: Download and install MySql connector
+- name: Check if MySQL connector is already present
+  stat:
+    path: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.47.jar
+  register: MySQL_connector
+
+- name: Download and unzip MySQL connector
   unarchive:
-    src: https://example.com/example.zip
+    src: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.zip
     dest: /usr/local/bin
     remote_src: yes
+  when: MySQL_connector.exists == False
+
+- name: Move MySQL to correct folder
+  copy:
+    src: /tmp/mysql-connector-java-5.1.47.jar
+    dest: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.47.jar
+  when: MySQL_connector.exists == False
