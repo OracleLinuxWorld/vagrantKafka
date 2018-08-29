@@ -24,6 +24,6 @@
     - kafka_rest_proxy
 
 # 5) Setting up Kafka connect MySQL pipeline
-- import_playbook: ansible-playbook_import_kafka_connect_MySQL.myl
+- import_playbook: ansible-playbook_import_kafka_connect_MySQL.yml
   tags:
     - kafka_connect
