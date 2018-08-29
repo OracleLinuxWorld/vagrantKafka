@@ -14,15 +14,19 @@
 # limitations under the License.
 ##
 
+# Docs regarding configs: https://docs.confluent.io/current/kafka-rest/docs/config.html
+
 id={{ kafka_rest_id }}
 schema.registry.url={{ kafka_rest_schema_registry_url }}
 
-# Zookeeper is not required
-#zookeeper.connect={{ kafka_rest_zookeeper_connect }}
+# List of Zookeeper instances (Zookeeper ensemble on Kafka brokers)
+zookeeper.connect={{ kafka_rest_zookeeper_connect }}
 
 # List of Kafka broker bootstrap servers
 bootstrap.servers={{ kafka_rest_bootstrap_servers }}
 
+# Listener config
+listeners: {{ kafka_rest_listeners }}
 
 #
 # Configure interceptor classes for sending consumer and producer metrics to Confluent Control Center
