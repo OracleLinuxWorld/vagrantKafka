@@ -8,7 +8,7 @@
 #  tags:
 #    - setpermissions
 
-# 2) Setting up Kafka brokers
+# 2) Setting up Kafka brokers & Zookeeper ensemble
 - import_playbook: ansible-playbook_import_kafka_brokers.yml
   tags:
     - kafkabrokers
