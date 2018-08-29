@@ -19,6 +19,7 @@ kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PL
 kafka_rest_id: "kafka-rest-test-server"
 kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
 
-# probably unused
-kafka_rest_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
-kafka_rest_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PLAINTEXT://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+# kafka_rest_zookeeper_connect: "{{ kafka_service_ip_address }}:2181"
+kafka_rest_zookeeper_connect: "{% for zknode in groups['kafka_brokers'] %}PLAINTEXT://{{ zknode }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
+
+kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}PLAINTEXT://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
