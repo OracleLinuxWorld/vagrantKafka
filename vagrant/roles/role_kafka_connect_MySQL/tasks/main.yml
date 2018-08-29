@@ -12,7 +12,7 @@
 - name: Download and unzip MySQL connector jar
   unarchive:
     src: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.zip
-    dest: /usr/local/bin
+    dest: /tmp
     remote_src: yes
   when: MySQL_connector.stat.exists == False
 
