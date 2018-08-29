@@ -18,7 +18,7 @@
       - inventory_hostname in groups['kafka_brokers']
 
   - name: Using broker id as ZooKeeper myID in {{ zookeeper_datadir }}/myid
-    shell: echo $HOSTNAME | sed s/\_/\-/g | cut -d'-' -f3 | sed s/^0*// > {{ zookeeper_datadir }}/myid
+    shell: echo "{{ kafka_server_broker_id.stdout }}" > {{ zookeeper_datadir }}/myid
     tags:
       - kafka-broker-id
       - kafka-zookeeper
