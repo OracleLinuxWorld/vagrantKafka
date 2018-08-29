@@ -24,10 +24,24 @@
     remote_src: yes
   when: MySQL_connector.stat.exists == False
 
-- name: Create MySQL connector
+# By using a PUT request we either create a new connector (response 201) or update the existing (response 200)
+- name: Create or update MySQL connector
   uri:
-    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors"
-    method: POST
+    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors/{{mysql_connector_name}}/config"
+    method: PUT
     body: "{{ lookup('file','templates/kafka-connect-jdbc-source.json.j2') }}"
-    status_code: 201
+    status_code: 201, 200
     body_format: json
+
+- name: Check connector status
+  uri:
+    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors/{{mysql_connector_name}}/status"
+    method: GET
+    status_code: 200
+    body_format: json
+  register: response
+
+- name: Validate if connector is in "RUNNING" state
+  fail:
+    msg: "The connector {{mysql_connector_name}} is not running"
+  when: response.state != "RUNNING"
