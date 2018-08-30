@@ -17,3 +17,4 @@ zookeeper:
 
 connector:
 	curl -s -XGET -H 'Accept: application/json' 'http://172.28.129.204:8083/connector-plugins' | jq '.'
+
