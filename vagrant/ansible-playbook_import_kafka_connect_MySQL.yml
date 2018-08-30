@@ -1,5 +1,5 @@
 ###
-### Set up Kafka schema registry
+### Set up the Kafka MySQL connector and ElasticSearch Sink
 
 - hosts:         kafka_worker_nodes
   remote_user:   vagrant
@@ -10,3 +10,4 @@
 
   roles:
     - role: role_kafka_connect_MySQL
+    - role: role_kafka_sink_ElasticSearch
