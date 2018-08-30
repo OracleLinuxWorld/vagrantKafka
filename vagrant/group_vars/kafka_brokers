@@ -12,7 +12,7 @@ kafka_server_num_partitions: 2
 kafka_server_listeners: "PLAINTEXT://:9092"
 
 # kafka_advertised_listeners: address + port that is advertised to all other servers
-kafka_advertised_listeners: "{{ kafka_service_ip_address }}:{{ port_kafka_broker }}"
+kafka_advertised_listeners: "PLAINTEXT://{{ kafka_service_ip_address }}:{{ port_kafka_broker }}"
 
 
 
