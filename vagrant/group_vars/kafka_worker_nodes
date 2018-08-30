@@ -38,6 +38,11 @@ kafka_rest_listeners: http://0.0.0.0:{{port_kafka_rest_proxy}}
 kafka_connect_group_id: "connect-cluster"
 kafka_connect_offset_storage_topic: "connect-offsets"
 kafka_connect_offset_storage_replication_factor: 3
+kafka_connect_config_storage_topic: "connect-configs"
+kafka_connect_config_storage_replication_factor: 3
+kafka_connect_status_storage_topic: "connect-status"
+kafka_connect_status_storage_replication_factor: 3
+
 
 ###
 ### role_kafka_connect_MySQL
