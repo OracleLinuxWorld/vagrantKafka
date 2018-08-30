@@ -11,3 +11,6 @@ brokers:
 
 topics:
 	curl -s -XGET -H 'Accept: application/vnd.kafka.v2+json' 'http://172.28.129.204:8082/topics' | jq '.'
+
+zookeeper:
+	cd scripts && ./zookeeper_get_status.sh
