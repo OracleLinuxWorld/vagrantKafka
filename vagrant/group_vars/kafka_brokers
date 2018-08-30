@@ -11,6 +11,11 @@ kafka_server_num_partitions: 2
 # listeners: The address the socket server listens on.
 kafka_server_listeners: "PLAINTEXT://:9092"
 
+# kafka_advertised_listeners: address + port that is advertised to all other servers
+kafka_advertised_listeners: "{{ kafka_service_ip_address }}:{{ port_kafka_broker }}"
+
+
+
 #
 # zookeeper.connect: Zookeeper connection string (see zookeeper docs for details).
 # This is a comma separated host:port pairs, each corresponding to a zk
