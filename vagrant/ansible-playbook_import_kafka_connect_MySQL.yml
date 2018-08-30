@@ -1,0 +1,12 @@
+###
+### Set up Kafka schema registry
+
+- hosts:         kafka_worker_nodes
+  remote_user:   vagrant
+  become:        true
+  become_user:   root
+  become_method: sudo
+  gather_facts:  true
+
+  roles:
+    - role: role_kafka_connect_MySQL
