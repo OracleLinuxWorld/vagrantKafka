@@ -8,7 +8,10 @@ schema_registry_kafkastore_topic: "_schemas"
 
 kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PLAINTEXT://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
-
+# /etc/schema-registry/connect-avro-distributed.properties.j2
+# &
+# /etc/schema-registry/connect-avro-standalone.properties.j2
+kafka_avro_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
 ###
 ### role_kafka_rest_proxy
