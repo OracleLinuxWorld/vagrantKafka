@@ -49,4 +49,4 @@ mysql_connector_name:   'jdbc_source_mysql'
 ### role_kafka_sink_ElasticSearch
 ###
 
-elastic_sink_name       'elastic_sink_connector'
+elastic_sink_name:       'elastic_sink_connector'
