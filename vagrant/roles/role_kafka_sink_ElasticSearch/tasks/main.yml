@@ -1,0 +1,31 @@
+#############################################################################
+
+###
+### Create the ElasticSearch Sink
+###
+
+# By using a PUT request we either create a new connector (response 201) or update the existing (response 200)
+- name: Create or update MySQL connector
+  uri:
+    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors/{{elastic_sink_name}}/config"
+    method: PUT
+    body: "{{ lookup('file','templates/kafka-connect-elastic-sink.json.j2') }}"
+    status_code: 201, 200
+    body_format: json
+  when:
+    - inventory_hostname in groups['kafka_worker_nodes'][0]
+
+- name: Check connector status
+  uri:
+    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors/{{elastic_sink_name}}/status"
+    method: GET
+    status_code: 200
+    body_format: json
+  register: response
+  when:
+    - inventory_hostname in groups['kafka_worker_nodes'][0]
+
+- name: Validate if connector is in "RUNNING" state
+  fail:
+    msg: "The connector {{elastic_sink_name}} is not running"
+  when: response.state != "RUNNING"
