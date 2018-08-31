@@ -38,7 +38,7 @@
 ###
 
   - debug:
-      msg: "Starting services for Kafka schema registry and Kafka Connect..."
+      msg: "Starting services for Kafka schema registry..."
     when:
       - inventory_hostname in groups['kafka_worker_nodes']
     tags:
@@ -52,7 +52,6 @@
        enabled: True
     with_items:
        - confluent-schema-registry
-       - confluent-kafka-connect
     when:
        - inventory_hostname in groups['kafka_worker_nodes']
     tags:
