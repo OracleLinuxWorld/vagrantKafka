@@ -1,4 +1,4 @@
-PHONY: provision up brokers topics connector
+PHONY: provision up brokers topics zookeeper connector
 
 provision:
 	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml
@@ -18,3 +18,4 @@ zookeeper:
 connector:
 	curl -s -XGET -H 'Accept: application/json' 'http://172.28.129.204:8083/connector-plugins' | jq '.'
 
+test:	brokers topics zookeeper connector
