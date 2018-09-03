@@ -49,13 +49,13 @@ kafka_connect_security_protocol: "PLAINTEXT"
 ###
 
 #Username password for schema used by the JDBC connector
-jdbc_username:      'admin'
-jdbc_password:      'admin'
-jdbc_database:      'hello_world'
-
+#jdbc_username:      'admin'
+#jdbc_password:      'admin'
+#jdbc_database:      'hello_world'
+#
 #Hostname and port for database
-jdbc_host:          'localhost'
-jdbc_port:          3306
+#jdbc_host:          'localhost'
+#jdbc_port:          3306
 
 #The name of the MySQL connector
 mysql_connector_name:   'jdbc_source_mysql'
