@@ -9,7 +9,7 @@
     update_cache: yes
   with_items:
     - mysql-server
-    - python-mysqldb
+    - python2-PyMySQL
     - build-essential
     - python-dev
     - libmysqlclient-dev
