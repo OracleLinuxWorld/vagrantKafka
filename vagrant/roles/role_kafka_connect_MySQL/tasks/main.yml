@@ -41,11 +41,18 @@
     method: GET
     status_code: 200
     body_format: json
+    return_content: yes
   register: response
+  when:
+    - inventory_hostname in groups['kafka_worker_nodes'][0]
+
+- name: debug
+  debug:
+    msg: "{{ response.json.connector.state }}"
   when:
     - inventory_hostname in groups['kafka_worker_nodes'][0]
 
 - name: Validate if connector is in "RUNNING" state
   fail:
     msg: "The connector {{mysql_connector_name}} is not running"
-  when: response.state != "RUNNING"
+  when: response.json.connector.state != "RUNNING"
