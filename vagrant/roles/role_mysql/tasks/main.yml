@@ -1,16 +1,19 @@
+- name: Download MySQL Community Repo
+  yum:
+    name: http://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm
+
 - name: Install Mysql
   yum:
     name: "{{ item }}"
     state: present
     update_cache: yes
   with_items:
-    - openjdk-8-jre-headless
     - mysql-server
-    - python-mysqldb
-    - build-essential
-    - python-dev
-    - libmysqlclient-dev
+    - python2-PyMySQL
+    - "@Development tools"
+    - python-devel
     - python-pip
+    - mysql-devel
 
 - name: Install mysql-python
   pip:
