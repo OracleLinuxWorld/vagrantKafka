@@ -8,11 +8,6 @@
 #  tags:
 #    - setpermissions
 
-# 1) Create MySQL database
-- import_playbook: ansible-playbook_import_mysql_database.yml
-  tags:
-    - mysql
-
 # 2) Setting up Kafka brokers & Zookeeper ensemble
 - import_playbook: ansible-playbook_import_kafka_brokers.yml
   tags:
@@ -33,7 +28,12 @@
   tags:
     - kafka_rest_proxy
 
-# 5) Setting up Kafka connect MySQL pipeline
+# 6) Create MySQL database
+- import_playbook: ansible-playbook_import_mysql_database.yml
+  tags:
+    - mysql
+
+# 7) Setting up Kafka connect MySQL pipeline
 - import_playbook: ansible-playbook_import_kafka_connect_MySQL.yml
   tags:
     - kafka_connect
