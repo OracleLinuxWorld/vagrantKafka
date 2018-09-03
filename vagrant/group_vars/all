@@ -56,5 +56,5 @@ jdbc_password:      'admin'
 jdbc_database:      'hello_world'
 
 #Hostname and port for database
-jdbc_host:          "{{ hostvars['mysql_db']['ansible_' + kafka_mgmt_interface].ipv4.address }}"
+jdbc_host:          "{{ groups['mysql_db'][0] }}"
 jdbc_port:          3306
