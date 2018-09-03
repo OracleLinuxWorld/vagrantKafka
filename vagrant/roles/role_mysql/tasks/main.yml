@@ -11,8 +11,7 @@
     - mysql-server
     - python2-PyMySQL
     - "@Development tools"
-    - python-dev
-    - libmysqlclient-devel
+    - python-devel
     - python-pip
 
 - name: Install mysql-python
