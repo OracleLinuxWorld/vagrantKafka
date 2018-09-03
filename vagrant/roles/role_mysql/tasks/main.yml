@@ -32,7 +32,7 @@
 - name: Create user user
   mysql_user:
     name: "{{ jdbc_username }}"
-    host: %
+    host: "%"
     login_port: "{{ jdbc_port }}"
     priv: "{{ jdbc_database }}.*:ALL"
     password: "{{ jdbc_password }}"
