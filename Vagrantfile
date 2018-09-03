@@ -111,7 +111,7 @@ Vagrant.configure("2") do |config|
     # mysql_node_01.vm.synced_folder "./vagrant", "/vagrant"
 #    mysql_node_01.vm.hostname = 'kafka-workernode-02'
     mysql_node_01.vm.box = "oraclelinuxworld/vagrant_kafka"
-    mysql_node_01.vm.network :"private_network", ip: "172.28.129.205", auto_config: true
+    mysql_node_01.vm.network :"private_network", ip: "172.28.129.206", auto_config: true
     mysql_node_01.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", "2"]
