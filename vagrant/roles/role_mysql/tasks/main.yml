@@ -12,7 +12,7 @@
     - python2-PyMySQL
     - "@Development tools"
     - python-dev
-    - libmysqlclient-dev
+    - libmysqlclient-devel
     - python-pip
 
 - name: Install mysql-python
