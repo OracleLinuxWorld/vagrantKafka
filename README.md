@@ -7,9 +7,9 @@ The setup that will be deployed is the following:
   * Kafka broker instances
 
 * 2x Kafka worker nodes running the following components:
-  * Kafka Connect
-  * Kafka REST proxy
-  * Kafka Schema Registry
+  * Kafka Connect (and Connect REST API on port 8083)
+  * Kafka REST proxy (and API on port 8082)
+  * Kafka Schema Registry (and Schema registry API on port 8081)
 
 # Regarding Ansible
 Please run the following commands:

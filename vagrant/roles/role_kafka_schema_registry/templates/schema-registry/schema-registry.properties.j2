@@ -46,3 +46,6 @@ kafkastore.topic={{ schema_registry_kafkastore_topic }}
 
 # If true, API requests that fail will include extra debugging information, including stack traces
 debug=false
+
+# setting host.name explicitly; left to auto-decide seemingly random public IPs show up in debug info
+host.name={{ kafka_service_ip_address }}
