@@ -13,6 +13,7 @@
     - "@Development tools"
     - python-devel
     - python-pip
+    - mysql-devel
 
 - name: Install mysql-python
   pip:
