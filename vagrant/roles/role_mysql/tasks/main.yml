@@ -19,6 +19,11 @@
   pip:
     name: mysql-python
 
+- name: Reset mysql service
+  service:
+    name: MySQL
+    state: restarted
+
 - name: Create a database
   mysql_db:
     name: "{{ jdbc_database }}"
