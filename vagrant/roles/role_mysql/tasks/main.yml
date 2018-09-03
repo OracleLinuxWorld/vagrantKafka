@@ -10,7 +10,7 @@
   with_items:
     - mysql-server
     - python2-PyMySQL
-    - build-essential
+    - "@Development tools"
     - python-dev
     - libmysqlclient-dev
     - python-pip
