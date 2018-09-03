@@ -42,6 +42,7 @@ kafka_connect_config_storage_replication_factor: "3"
 kafka_connect_status_storage_topic: "connect-status"
 kafka_connect_status_storage_replication_factor: "3"
 
+kafka_connect_security_protocol: "PLAINTEXT"
 
 ###
 ### role_kafka_connect_MySQL

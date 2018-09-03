@@ -19,8 +19,14 @@
 # to be used with the examples, and some settings may differ from those used in a production system, especially
 # the `bootstrap.servers` and those specifying replication factors.
 
+
+# added 2018-09-03:
+security.protocol={{ kafka_connect_security_protocol }}
+client.id={{ kafka_service_ip_address }}
+
+
 # A list of host/port pairs to use for establishing the initial connection to the Kafka cluster.
-bootstrap.servers={{ kafka_service_ip_address }}:{{ port_kafka_broker }}
+bootstrap.servers={{ kafka_rest_bootstrap_servers }}
 
 # unique name for the cluster, used in forming the Connect cluster group. Note that this must not conflict with consumer group IDs
 group.id={{ kafka_connect_group_id }}
