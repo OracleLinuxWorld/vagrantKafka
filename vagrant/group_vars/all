@@ -46,3 +46,16 @@ wait_for_timeout: 180
 #############################
 # Define list of BROKER nodes
 kafka_brokers:         "{{ groups['kafka_brokers'] | to_json }}"
+
+###
+### MySQL settings
+###
+
+#Username password for schema used by the JDBC connector
+jdbc_username:      'admin'
+jdbc_password:      'admin'
+jdbc_database:      'hello_world'
+
+#Hostname and port for database
+jdbc_host:          'localhost'
+jdbc_port:          3306

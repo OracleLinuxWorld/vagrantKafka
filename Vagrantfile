@@ -105,4 +105,21 @@ Vagrant.configure("2") do |config|
     end # End of "kafka_workernode_02.vm.provider"
   end   # End of config.vm.define "kafka_workernode_02"
 
+  # Define MySQL database machine
+  config.vm.define "mysql_node_01" do |mysql_node_01|
+    # synced_folder only used in ansible_local setting
+    # mysql_node_01.vm.synced_folder "./vagrant", "/vagrant"
+#    mysql_node_01.vm.hostname = 'kafka-workernode-02'
+    mysql_node_01.vm.box = "oraclelinuxworld/vagrant_kafka"
+    mysql_node_01.vm.network :"private_network", ip: "172.28.129.205", auto_config: true
+    mysql_node_01.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+      v.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+      v.customize ["modifyvm", :id, "--usb", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
+      v.customize ["modifyvm", :id, "--name", "mysql_node_01"]
+    end # End of "mysql_node_01.vm.provider"
+  end   # End of config.vm.define "mysql_node_01"
+
 end       # End of "Vagrant.configure"
