@@ -8,10 +8,10 @@
 #  tags:
 #    - setpermissions
 
-1) Create MySQL database
+# 1) Create MySQL database
 - import_playbook: ansible-playbook_import_mysql_database.yml
- tags:
-   - mysql
+  tags:
+    - mysql
 
 # 2) Setting up Kafka brokers & Zookeeper ensemble
 - import_playbook: ansible-playbook_import_kafka_brokers.yml
