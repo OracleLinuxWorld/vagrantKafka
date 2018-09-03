@@ -4,7 +4,7 @@ ANSIBLE_INVENTORY="../vagrant/inventory/hosts"
 
 ZK_HOSTS=`ansible-inventory --list -i $ANSIBLE_INVENTORY | jq -r '.kafka_brokers[] | @sh'`
 
-FIRST_BROKER=`echo $ZK_HOSTS | sed s/\ /\\n/g | sed s/\'//g | sort | head -n 1`
+FIRST_BROKER=`ansible-inventory --list -i $ANSIBLE_INVENTORY | jq -r '.kafka_brokers[] | [limit(1;.[])] | @sh' | sed s/\'//g`
 
 TOPIC_NAME="test"
 
@@ -23,6 +23,7 @@ TXT_FEED="./demo.txt"
 ###
 
 echo "Creating test topic: $TOPIC_NAME"
+echo "Talking to broker: $FIRST_BROKER"
 
 kafka-topics --create --zookeeper $FIRST_BROKER:2181 --replication-factor 3 --partitions 1 --topic $TOPIC_NAME
 
