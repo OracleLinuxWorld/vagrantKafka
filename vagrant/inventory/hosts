@@ -6,3 +6,6 @@
 [kafka_worker_nodes]
 172.28.129.204 ansible_host=172.28.129.204 ansible_port=22 ansible_user='vagrant' ansible_ssh_private_key_file='~/.vagrant.d/boxes/oraclelinuxworld-VAGRANTSLASH-vagrant_kafka/0.1/virtualbox/vagrant_private_key' ansible_ssh_common_args='-o StrictHostKeyChecking=no' HOSTNAME='kafka_workernode_01'
 172.28.129.205 ansible_host=172.28.129.205 ansible_port=22 ansible_user='vagrant' ansible_ssh_private_key_file='~/.vagrant.d/boxes/oraclelinuxworld-VAGRANTSLASH-vagrant_kafka/0.1/virtualbox/vagrant_private_key' ansible_ssh_common_args='-o StrictHostKeyChecking=no' HOSTNAME='kafka_workernode_02'
+
+[mysql_db]
+172.28.129.206 ansible_host=172.28.129.206 ansible_port=22 ansible_user='vagrant' ansible_ssh_private_key_file='~/.vagrant.d/boxes/oraclelinuxworld-VAGRANTSLASH-vagrant_kafka/0.1/virtualbox/vagrant_private_key' ansible_ssh_common_args='-o StrictHostKeyChecking=no' HOSTNAME='mysql_node_01'

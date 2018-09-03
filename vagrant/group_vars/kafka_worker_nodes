@@ -13,7 +13,6 @@ kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PL
 # /etc/schema-registry/connect-avro-standalone.properties.j2
 kafka_avro_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
-
 ###
 ### role_kafka_rest_proxy
 ###
@@ -29,20 +28,6 @@ kafka_rest_zookeeper_connect: "{% for zknode in groups['kafka_brokers'] %}{{ zkn
 kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}PLAINTEXT://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
 kafka_rest_listeners: http://0.0.0.0:{{port_kafka_rest_proxy}}
-
-
-###
-### role role_kafka_connect_rest
-###
-
-kafka_connect_group_id: "connect-cluster"
-kafka_connect_offset_storage_topic: "connect-offsets"
-kafka_connect_offset_storage_replication_factor: 3
-kafka_connect_config_storage_topic: "connect-configs"
-kafka_connect_config_storage_replication_factor: 3
-kafka_connect_status_storage_topic: "connect-status"
-kafka_connect_status_storage_replication_factor: 3
-
 
 ###
 ### role_kafka_connect_MySQL
@@ -60,9 +45,9 @@ jdbc_port:          3306
 #The name of the MySQL connector
 mysql_connector_name:   'jdbc_source_mysql'
 
-
 ###
 ### role_kafka_sink_ElasticSearch
 ###
 
-elastic_sink_name:       'elastic_sink_connector'
+elastic_server_url:     'http://0.0.0.0:9000'
+elastic_sink_name       'elastic_sink_connector'
