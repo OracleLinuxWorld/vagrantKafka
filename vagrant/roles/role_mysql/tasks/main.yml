@@ -21,7 +21,7 @@
 
 - name: Reset mysql service
   service:
-    name: MySQL
+    name: mysql
     state: restarted
 
 - name: Create a database
