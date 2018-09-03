@@ -1,6 +1,6 @@
 - name: Download MySQL Community Repo
   yum:
-    name: http://example.com/some_package.rpm
+    name: ttp://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm
 
 - name: Install Mysql
   yum:
