@@ -29,7 +29,7 @@
   uri:
     url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors/{{mysql_connector_name}}/config"
     method: PUT
-    body: "{{ lookup('file','templates/kafka-connect-jdbc-source.json.j2') }}"
+    body: "{{ lookup('template','templates/kafka-connect-jdbc-source.json.j2') }}"
     status_code: 201, 200
     body_format: json
   when:
