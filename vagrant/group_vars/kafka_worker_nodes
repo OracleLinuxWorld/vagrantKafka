@@ -64,5 +64,5 @@ mysql_connector_name:   'jdbc_source_mysql'
 ### role_kafka_sink_ElasticSearch
 ###
 
-elastic_server_url:     'http://{{ groups['elasticsearch_nodes'][0] }}:9000'
+elastic_server_url:     "http://{{ groups['mysql_db'][0] }}:9000"
 elastic_sink_name:       'elastic_sink_connector'
