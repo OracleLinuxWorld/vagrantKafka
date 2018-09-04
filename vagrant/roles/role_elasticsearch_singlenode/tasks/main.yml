@@ -1,0 +1,41 @@
+###
+### Elasticsearch config file
+###
+
+  - name: Templating Elasticsearch config file
+    template:
+      src: templates/elasticsearch.yml.j2
+      dest: "/etc/elasticsearch/elasticsearch.yml"
+    notify:
+      - restart elasticsearch
+    tags:
+      - elasticsearch-configfiles
+
+###
+### Elasticsearch jvm.options file
+###
+
+  - name: Templating JVM config file
+    template:
+      src: templates/jvm.options.j2
+      dest: "/etc/elasticsearch/jvm.options"
+    notify:
+      - restart elasticsearch
+    tags:
+      - elasticsearch-configfiles
+
+
+###
+### Start Elasticsearch at boot time
+###
+
+  - name: Start and enable Elasticsearch at boot time
+    service:
+       name: "{{ item }}"
+       state: started
+       enabled: True
+    with_items:
+       - elasticsearch
+    when:
+       - ansible_os_family == "RedHat"
+       - ansible_distribution_major_version == "7"

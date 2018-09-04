@@ -37,3 +37,8 @@
 - import_playbook: ansible-playbook_import_kafka_connect_MySQL.yml
   tags:
     - kafka_connect
+
+# 7) Setting up Elasticsearch single node
+- import_playbook: ansible-playbook_import_elasticsearch_singlenode.yml
+  tags:
+    - elasticsearch

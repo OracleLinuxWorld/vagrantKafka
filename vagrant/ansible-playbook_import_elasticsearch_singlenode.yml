@@ -1,0 +1,12 @@
+###
+### Set up Elasticsearch single node
+### Done in Ansible because of Vagrant race condition between setting both IP addresses and hostname
+
+- hosts: elasticsearch_nodes
+  remote_user: vagrant
+  become: true
+  become_user: root
+  become_method: sudo
+
+  roles:
+    - role_elasticsearch_singlenode

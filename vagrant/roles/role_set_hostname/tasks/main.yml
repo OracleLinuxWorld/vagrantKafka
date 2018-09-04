@@ -24,6 +24,14 @@
     when:
       - inventory_hostname in groups['kafka_worker_nodes']
 
+  - name: All the hosts known in the inventory file group elasticsearch_nodes
+    debug:
+      msg="{{ item }}"
+    with_items:
+      - "{{ groups['elasticsearch_nodes'] }}"
+    when:
+      - inventory_hostname in groups['elasticsearch_nodes']
+
   - name: Kafka Service IP address
     debug:
       msg="Kafka service IP address is {{ item }}"

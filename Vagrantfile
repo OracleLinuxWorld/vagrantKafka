@@ -123,4 +123,38 @@ Vagrant.configure("2") do |config|
     end # End of "mysql_node_01.vm.provider"
   end   # End of config.vm.define "mysql_node_01"
 
+  # Define node for Confluent Control Center
+  config.vm.define "kafka_control_center_01" do |kafka_control_center_01|
+    # synced_folder only used in ansible_local setting
+    # kafka_control_center_01.vm.synced_folder "./vagrant", "/vagrant"
+#    kafka_control_center_01.vm.hostname = 'kafka-workernode-02'
+    kafka_control_center_01.vm.box = "oraclelinuxworld/vagrant_kafka"
+    kafka_control_center_01.vm.network :"private_network", ip: "172.28.129.207", auto_config: true
+    kafka_control_center_01.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+      v.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+      v.customize ["modifyvm", :id, "--usb", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
+      v.customize ["modifyvm", :id, "--name", "kafka_control_center_01"]
+    end # End of "kafka_control_center_01.vm.provider"
+  end   # End of config.vm.define "kafka_control_center_01"
+
+  # Define node for Elastic Search Node
+  config.vm.define "elasticsearch_node_01" do |elasticsearch_node_01|
+    # synced_folder only used in ansible_local setting
+    # elasticsearch_node_01.vm.synced_folder "./vagrant", "/vagrant"
+#    elasticsearch_node_01.vm.hostname = 'kafka-workernode-02'
+    elasticsearch_node_01.vm.box = "oraclelinuxworld/base_elasticsearch"
+    elasticsearch_node_01.vm.network :"private_network", ip: "172.28.129.208", auto_config: true
+    elasticsearch_node_01.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+      v.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+      v.customize ["modifyvm", :id, "--usb", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
+      v.customize ["modifyvm", :id, "--name", "elasticsearch_node_01"]
+    end # End of "elasticsearch_node_01.vm.provider"
+  end   # End of config.vm.define "elasticsearch_node_01"
+
 end       # End of "Vagrant.configure"
