@@ -24,7 +24,7 @@
     remote_src: yes
   when: MySQL_connector.stat.exists == False
 
-- name: Validate for port 8083 to become available
+- name: Wait for port 8083 to become available
   wait_for:
     port: 8083
     host: "{{ kafka_service_ip_address }}"

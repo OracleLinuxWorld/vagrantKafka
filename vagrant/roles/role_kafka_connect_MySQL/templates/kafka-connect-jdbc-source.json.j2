@@ -6,6 +6,8 @@
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
 
+  "replication.factor": 3,
+
   "_comment": " --- JDBC-specific configuration below here  --- ",
   "connection.url": "jdbc:mysql://{{ jdbc_host }}:{{ jdbc_port }}/{{ jdbc_database }}?user={{ jdbc_username }}&password={{ jdbc_password }}",
 

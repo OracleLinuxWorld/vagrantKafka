@@ -4,7 +4,7 @@
 ### Create the ElasticSearch Sink
 ###
 
-- name: Validate for port 8083 to become available
+- name: Wait for port 8083 to become available
   wait_for:
     port: 8083
     host: "{{ kafka_service_ip_address }}"
