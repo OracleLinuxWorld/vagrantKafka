@@ -4,6 +4,12 @@
 ### Create the ElasticSearch Sink
 ###
 
+- name: Validate if port 8083 is available
+  wait_for:
+    port: 22
+    host: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}"
+    delay: 10
+
 # By using a PUT request we either create a new connector (response 201) or update the existing (response 200)
 - name: Create or update MySQL connector
   uri:
@@ -17,15 +23,13 @@
 
 - name: Check connector status
   uri:
-    url: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}/connectors/{{elastic_sink_name}}/status"
+    url: "http://{{ ansible_eth1.ipv4.address }}:{{ port_kafka_connect }}/connectors/{{elastic_sink_name}}/status"
     method: GET
     status_code: 200
     body_format: json
   register: response
-  when:
-    - inventory_hostname in groups['kafka_worker_nodes'][0]
 
 - name: Validate if connector is in "RUNNING" state
   fail:
     msg: "The connector {{elastic_sink_name}} is not running"
-  when: response.state != "RUNNING"
+  when: response.json.connector.state != "RUNNING"
