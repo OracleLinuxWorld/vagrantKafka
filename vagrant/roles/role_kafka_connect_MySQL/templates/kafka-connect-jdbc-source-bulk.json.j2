@@ -1,0 +1,25 @@
+{
+  "_comment": "Based on the tutorial on: https://www.confluent.io/blog/simplest-useful-kafka-connect-data-pipeline-world-thereabouts-part-1/",
+  "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "key.converter": "io.confluent.connect.avro.AvroConverter",
+  "key.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
+
+  "replication.factor": 3,
+
+  "_comment": " --- JDBC-specific configuration below here  --- ",
+  "connection.url": "jdbc:mysql://{{ jdbc_host }}:{{ jdbc_port }}/{{ jdbc_database }}?user={{ jdbc_username }}&password={{ jdbc_password }}",
+
+  "_comment": "Which table(s) to include",
+  "table.whitelist": "logs",
+
+  "_comment": "Pull all rows based on an timestamp column. You can also do bulk or incrementing column-based extracts. For more information, see http://docs.confluent.io/current/connect/connect-jdbc/docs/source_config_options.html#mode",
+  "mode": "bulk ",
+
+  "_comment": "If the column is not defined as NOT NULL, tell the connector to ignore this  ",
+  "validate.non.null": "false",
+
+  "_comment": "The Kafka topic will be made up of this prefix, plus the table name  ",
+  "topic.prefix": "bulk-"
+}
