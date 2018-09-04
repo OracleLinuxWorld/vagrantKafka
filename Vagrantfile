@@ -147,6 +147,7 @@ Vagrant.configure("2") do |config|
 #    elasticsearch_node_01.vm.hostname = 'kafka-workernode-02'
     elasticsearch_node_01.vm.box = "oraclelinuxworld/base_elasticsearch"
     elasticsearch_node_01.vm.network :"private_network", ip: "172.28.129.208", auto_config: true
+    elasticsearch_node_01.vm.network "forwarded_port", guest: 9200, host: 9200, protocol: "tcp"
     elasticsearch_node_01.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", "2"]
