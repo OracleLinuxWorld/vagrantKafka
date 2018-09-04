@@ -4,10 +4,10 @@
 ### Create the ElasticSearch Sink
 ###
 
-- name: Validate if port 8083 is available
+- name: Validate for port 8083 to become available
   wait_for:
-    port: 22
-    host: "http://{{ kafka_service_ip_address }}:{{ port_kafka_connect }}"
+    port: 8083
+    host: "{{ kafka_service_ip_address }}"
     delay: 10
 
 # By using a PUT request we either create a new connector (response 201) or update the existing (response 200)
