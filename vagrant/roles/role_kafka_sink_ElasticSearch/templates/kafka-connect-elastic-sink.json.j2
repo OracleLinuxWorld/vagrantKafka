@@ -10,7 +10,7 @@
 
   "_comment": "--- Elasticsearch-specific config ---",
   "_comment": "Elasticsearch server address",
-  "connection.url": "http://{{ elastic_server_url }}:9200",
+  "connection.url": "{{ elastic_server_url }}",
 
   "_comment": "Elasticsearch mapping name. Gets created automatically if doesn't exist  ",
   "type.name": "kafka-connect",
