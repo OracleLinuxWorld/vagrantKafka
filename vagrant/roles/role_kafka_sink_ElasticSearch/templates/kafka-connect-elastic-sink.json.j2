@@ -18,7 +18,7 @@
   "_comment": "Which topic to stream data from into Elasticsearch",
   "topics": "bulk-logs",
   "transforms":"routeTS",
-  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter"
+  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter",
 
   "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
   "key.ignore": "true"
