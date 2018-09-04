@@ -15,15 +15,16 @@
   "_comment": "Elasticsearch mapping name. Gets created automatically if doesn't exist  ",
   "type.name": "kafka-connect",
 
+  "topics":"bulk-logs",
   "transforms": "CopyTopic, Router",
   "transforms.CopyTopic.type": "org.apache.kafka.connect.transforms.InsertField$Value",
   "transforms.CopyTopic.topic.field": "topic",
   "transforms.Router.type": "org.apache.kafka.connect.transforms.TimestampRouter",
   "transforms.Router.timestamp.format": "yyyyMMdd",
-  "transforms.Router.topic.format": "index-${timestamp}",
+  "transforms.Router.topic.format": "bulk-logs-${timestamp}",
 
-  "_comment": "Which topic to stream data from into Elasticsearch",
-  "topics.regex": "bulk-\\w*",
+  {# "_comment": "Which topic to stream data from into Elasticsearch",
+  "topics.regex": "bulk-\\w*", #}
 
   "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore:true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
   "key.ignore": "true"
