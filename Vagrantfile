@@ -130,6 +130,7 @@ Vagrant.configure("2") do |config|
 #    kafka_control_center_01.vm.hostname = 'kafka-workernode-02'
     kafka_control_center_01.vm.box = "oraclelinuxworld/vagrant_kafka"
     kafka_control_center_01.vm.network :"private_network", ip: "172.28.129.207", auto_config: true
+    kafka_control_center_01.vm.network "forwarded_port", guest: 9021, host: 9021, protocol: "tcp"
     kafka_control_center_01.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", "2"]
