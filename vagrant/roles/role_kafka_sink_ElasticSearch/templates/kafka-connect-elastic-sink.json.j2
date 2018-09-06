@@ -7,10 +7,7 @@
 
   "_comment": "Which topic to stream data from into Elasticsearch",
   "topics": "bulk-logs",
-  {#
-    "transforms": "routeTS",
-    "transforms.routeTS.type": "org.apache.kafka.connect.transforms.TimestampRouter",
-    #}
+
   "transforms": "dropPrefix,routeTS",
   "transforms.dropPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
   "transforms.dropPrefix.regex": "bulk-(.*)",
@@ -18,7 +15,7 @@
   "transforms.routeTS.type": "org.apache.kafka.connect.transforms.TimestampRouter",
   "transforms.routeTS.topic.format": "kafka-${topic}-${timestamp}",
   "transforms.routeTS.timestamp.format": "YYYYMMdd",
-
+  "log.message.timestamp.type": "LogAppendTime"
   "replication.factor": 3,
 
   "_comment": "--- Elasticsearch-specific config ---",
