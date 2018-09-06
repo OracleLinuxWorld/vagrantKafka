@@ -1,4 +1,4 @@
-{# {
+{
   "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "key.converter": "io.confluent.connect.avro.AvroConverter",
@@ -6,9 +6,18 @@
   "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
 
   "_comment": "Which topic to stream data from into Elasticsearch",
-  "topics": "bulk-logs",
-  "transforms":"routeTS",
-  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter",
+  {#
+    "topics": "bulk-logs",
+    "transforms": "routeTS",
+    "transforms.routeTS.type": "org.apache.kafka.connect.transforms.TimestampRouter",
+    #}
+  "transforms": "dropPrefix,routeTS",
+  "transforms.dropPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
+  "transforms.dropPrefix.regex": "bulk-(.*)",
+  "transforms.dropPrefix.replacement": "$1",
+  "transforms.routeTS.type": "org.apache.kafka.connect.transforms.TimestampRouter",
+  "transforms.routeTS.topic.format": "kafka-${topic}-${timestamp}",
+  "transforms.routeTS.timestamp.format": "YYYYMM"
 
   "replication.factor": 3,
 
@@ -21,17 +30,4 @@
 
   "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
   "key.ignore": "true"
-} #}
-{
-  "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
-  "key.converter": "io.confluent.connect.avro.AvroConverter",
-  "value.converter": "io.confluent.connect.avro.AvroConverter",
-  "key.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
-  "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
-  "topics": "bulk-logs",
-  "key.ignore": "true",
-  "type.name": "type.name=kafka-connect",
-  "connection.url": "{{ elastic_server_url }}",
-  "transforms":"routeTS",
-  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter"
 }
