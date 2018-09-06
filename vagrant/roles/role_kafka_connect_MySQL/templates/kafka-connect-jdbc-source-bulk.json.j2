@@ -1,5 +1,6 @@
 {
   "_comment": "Based on the tutorial on: https://www.confluent.io/blog/simplest-useful-kafka-connect-data-pipeline-world-thereabouts-part-1/",
+  "plugin.path": "/usr/local/share/kafka/plugins",
   "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
   "key.converter": "io.confluent.connect.avro.AvroConverter",
   "key.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
