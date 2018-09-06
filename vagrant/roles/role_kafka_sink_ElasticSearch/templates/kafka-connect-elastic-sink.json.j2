@@ -1,27 +1,24 @@
 {
-  "config": {
-    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
-    "value.converter": "io.confluent.connect.avro.AvroConverter",
-    "key.converter": "io.confluent.connect.avro.AvroConverter",
-    "key.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
-    "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
+  "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "key.converter": "io.confluent.connect.avro.AvroConverter",
+  "key.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
+  "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
 
-    "replication.factor": 3,
+  "replication.factor": 3,
 
-    "_comment": "--- Elasticsearch-specific config ---",
-    "_comment": "Elasticsearch server address",
-    "connection.url": "{{ elastic_server_url }}",
+  "_comment": "--- Elasticsearch-specific config ---",
+  "_comment": "Elasticsearch server address",
+  "connection.url": "{{ elastic_server_url }}",
 
-    "_comment": "Elasticsearch mapping name. Gets created automatically if doesn't exist  ",
-    "type.name": "type.name=kafka-connect",
+  "_comment": "Elasticsearch mapping name. Gets created automatically if doesn't exist  ",
+  "type.name": "type.name=kafka-connect",
 
-    "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
-    "key.ignore": "true",
+  "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
+  "key.ignore": "true",
 
-    "_comment": "Which topic to stream data from into Elasticsearch",
-    "topics": "bulk-logs",
-    "transforms": "routeTS",
-    "transforms.routeTS.type": "org.apache.kafka.connect.transforms.TimestampRouter"
-  },
-  "name": "es-sink-mysql"
+  "_comment": "Which topic to stream data from into Elasticsearch",
+  "topics": "bulk-logs",
+  "transforms":"routeTS",
+  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter"
 }
