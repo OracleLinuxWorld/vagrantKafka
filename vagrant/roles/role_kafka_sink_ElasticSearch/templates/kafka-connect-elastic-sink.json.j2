@@ -5,6 +5,11 @@
   "key.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
   "value.converter.schema.registry.url": "http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}",
 
+  "_comment": "Which topic to stream data from into Elasticsearch",
+  "topics": "bulk-logs",
+  "transforms":"routeTS",
+  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter",
+
   "replication.factor": 3,
 
   "_comment": "--- Elasticsearch-specific config ---",
@@ -15,10 +20,5 @@
   "type.name": "type.name=kafka-connect",
 
   "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
-  "key.ignore": "true",
-
-  "_comment": "Which topic to stream data from into Elasticsearch",
-  "topics": "bulk-logs",
-  "transforms":"routeTS",
-  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter"
+  "key.ignore": "true"
 }
