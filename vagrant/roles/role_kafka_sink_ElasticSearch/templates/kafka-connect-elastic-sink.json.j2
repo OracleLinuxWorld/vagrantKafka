@@ -1,5 +1,4 @@
 {
-  "_comment": "-- standard converter stuff -- this can actually go in the worker config globally --",
   "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "key.converter": "io.confluent.connect.avro.AvroConverter",
@@ -15,11 +14,11 @@
   "_comment": "Elasticsearch mapping name. Gets created automatically if doesn't exist  ",
   "type.name": "type.name=kafka-connect",
 
+  "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
+  "key.ignore": "true",
+
   "_comment": "Which topic to stream data from into Elasticsearch",
   "topics": "bulk-logs",
   "transforms":"routeTS",
-  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter",
-
-  "_comment": "If the Kafka message doesn't have a key (as is the case with JDBC source)  you need to specify key.ignore=true. If you don't, you'll get an error from the Connect task: 'ConnectException: Key is used as document id and can not be null.",
-  "key.ignore": "true"
+  "transforms.routeTS.type":"org.apache.kafka.connect.transforms.TimestampRouter"
 }
