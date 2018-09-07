@@ -4,7 +4,7 @@
 ###
 
   - name: Establish broker id
-    shell: echo $HOSTNAME | sed s/\_/\-/g | cut -d'-' -f3 | sed s/^0*//
+    shell: echo $HOSTNAME | sed s/\_/\-/g | awk -F "-" '{print $NF}' | sed s/^0*//
     register: kafka_server_broker_id
     tags:
       - kafka-broker-id
