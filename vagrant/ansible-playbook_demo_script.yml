@@ -1,0 +1,39 @@
+###
+### This playbook will push a demo script to /usr/local/bin
+
+- hosts:         kafka_worker_nodes
+  remote_user:   vagrant
+  become:        true
+  become_user:   root
+  become_method: sudo
+  gather_facts:  true
+
+  tasks:
+
+
+  - name: Install pre requisites
+    yum:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - nc
+
+### /usr/local/bin/kafka-demo.sh
+
+  - debug:
+      msg: "Copying kafka-demo.sh"
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-demo
+
+  - name: Copying demo script
+    template:
+      src: templates/demoscript/kafka-demo.sh.j2
+      dest: "/usr/local/bin/kafka-demo.sh"
+      mode: 0755
+    tags:
+      - kafka-demo
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']

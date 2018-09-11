@@ -58,3 +58,12 @@ jdbc_database:      'hello_world'
 #Hostname and port for database
 jdbc_host:          "{{ groups['mysql_db'][0] }}"
 jdbc_port:          3306
+
+
+
+###
+### Other (not used in playbooks, but for demo script)
+###
+
+kafka_broker_ips: "{% for node in groups['kafka_brokers'] %}{{ node }}{% if not loop.last %},{% endif %}{% endfor%}"
+kafka_workernode_ips: "{% for zknode in groups['kafka_worker_nodes'] %}{{ zknode }}{% if not loop.last %},{% endif %}{% endfor%}"

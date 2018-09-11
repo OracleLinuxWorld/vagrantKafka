@@ -37,3 +37,7 @@ elastic: elastic_health elastic_indices elastic_allocation
 restart:
 	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook_restart_kafka_services.yml
 	ansible-playbook -i vagrant/inventory/dc-2/hosts vagrant/ansible-playbook_restart_kafka_services.yml
+
+kafka-demo:
+	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook_demo_script.yml
+	ansible-playbook -i vagrant/inventory/dc-2/hosts vagrant/ansible-playbook_demo_script.yml
