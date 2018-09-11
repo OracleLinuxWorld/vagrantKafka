@@ -1,0 +1,121 @@
+###
+### Vagrant starts all VMs one after another.
+### By the time the 3rd Kafka broker has been started, the experience is that a
+### lot of the times the forming of the cluster has difficulties.
+###
+### This playbook restarts all services in order while all VMs are running.
+
+- hosts:         kafka_brokers
+  remote_user:   vagrant
+  become:        true
+  become_user:   root
+  become_method: sudo
+  gather_facts:  true
+
+  tasks:
+
+  - debug:
+      msg: "Starting services for Kafka brokers..."
+    when:
+      - inventory_hostname in groups['kafka_brokers']
+
+  - name: Restart Zookeeper
+    systemd:
+       name: "{{ item }}"
+       state: restarted
+       enabled: True
+    with_items:
+       - confluent-zookeeper
+    when:
+       - inventory_hostname in groups['kafka_brokers']
+    tags:
+      - kafka-systemctl
+
+  - name: Restart Kafka brokers
+    systemd:
+       name: "{{ item }}"
+       state: restarted
+       enabled: True
+    with_items:
+       - confluent-kafka
+    when:
+       - inventory_hostname in groups['kafka_brokers']
+    tags:
+      - kafka-systemctl
+
+
+
+
+- hosts:         kafka_worker_nodes
+  remote_user:   vagrant
+  become:        true
+  become_user:   root
+  become_method: sudo
+  gather_facts:  true
+
+  tasks:
+
+  - debug:
+      msg: "Starting services for Kafka Connect Distributed..."
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-connect
+
+  - name: Restart Kafka Connect
+    systemd:
+       name: "{{ item }}"
+       state: restarted
+       enabled: True
+    with_items:
+       - confluent-kafka-connect
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-connect
+
+  - debug:
+      msg: "Starting services for Kafka schema registry..."
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-schema-registry
+
+  - name: Restart Kafka Schema Registry
+    systemd:
+       name: "{{ item }}"
+       state: started
+       enabled: True
+    with_items:
+       - confluent-schema-registry
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-schema-registry
+
+
+
+  - debug:
+      msg: "Starting services for Kafka REST proxy..."
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-rest-proxy
+
+  - name: Restart Kafka REST proxy
+    systemd:
+       name: "{{ item }}"
+       state: started
+       enabled: True
+    with_items:
+       - confluent-kafka-rest
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-systemctl
+      - kafka-rest-proxy
