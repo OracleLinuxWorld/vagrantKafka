@@ -1,7 +1,10 @@
 PHONY: provision up brokers topics zookeeper connector demo elastic_health elastic_indices elastic_allocation elastic
 
 provision:
-	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml
+	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook.yml
+
+provision2:
+	ansible-playbook -i vagrant/inventory/dc-2/hosts vagrant/ansible-playbook.yml
 
 up:
 	vagrant up
