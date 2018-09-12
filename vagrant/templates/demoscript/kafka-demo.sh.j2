@@ -14,13 +14,14 @@ umask 077
 ### Variables
 ###
 
-TOPIC_NAME="test"
-REPLICATION_FACTOR="3"
-PARTITIONS="3"
+export TOPIC_NAME="test"
+export REPLICATION_FACTOR="3"
+export PARTITIONS="3"
 
-PORT_BROKER="9092"
-PORT_REST_PROXY="8082"
-PORT_ZOOKEEPER="2181"
+export PORT_BROKER="9092"
+export PORT_REST_PROXY="8082"
+export PORT_KAFKA_CONNECT_REST="8083"
+export PORT_ZOOKEEPER="2181"
 
 
 
@@ -32,6 +33,8 @@ KAFKA_LOCAL_WORKERNODE_IPS="{{ kafka_workernode_ips }}"
 KAFKA_LOCAL_BROKER_FIRST_IP=`echo $KAFKA_LOCAL_BROKER_IPS | awk -F , '{print $1}'`
 KAFKA_LOCAL_WORKERNODE_FIRST_IP=`echo $KAFKA_LOCAL_WORKERNODE_IPS | awk -F , '{print $1}'`
 
+echo "First broker: $KAFKA_LOCAL_BROKER_FIRST_IP"
+echo "First workernode: $KAFKA_LOCAL_WORKERNODE_FIRST_IP"
 
 
 ###
@@ -64,8 +67,12 @@ fi
 
 
 verify_topic() {
-echo "Verify topic $TOPIC_NAME"
+echo "Verify topic $TOPIC_NAME with kafka_topics:"
 kafka-topics --zookeeper $KAFKA_LOCAL_BROKER_FIRST_IP:$PORT_ZOOKEEPER --describe --topic $TOPIC_NAME
+
+echo ""
+echo "Verify topic $TOPIC_NAME through REST PROXY:"
+curl -s -XGET -H 'Accept: application/vnd.kafka.v2+json' 'http://$KAFKA_LOCAL_WORKERNODE_FIRST_IP:$PORT_REST_PROXY/topics/$TOPIC_NAME' | jq '.'
 }
 
 
@@ -103,6 +110,11 @@ echo `seq 1 10` | kafka-console-producer --broker-list $KAFKA_LOCAL_BROKER_FIRST
 #done
 }
 
+get_connectors() {
+echo "Display the connector plugins available through the Kafka Connect REST API"
+echo ""
+curl -s -XGET -H "Accept: application/json" "http://$KAFKA_LOCAL_WORKERNODE_FIRST_IP:$PORT_KAFKA_CONNECT_REST/connectors/" | jq '.'
+}
 
 
 
@@ -162,6 +174,11 @@ case "${1:-''}" in
         start_console_producer
         ;;
 
+  'get-connectors')
+        get_connectors
+        ;;
+
+
   'restart')
         echo "Restart ALL services"
         echo ""
@@ -182,7 +199,8 @@ case "${1:-''}" in
   echo "verify-topic              : Get details on topic $TOPIC_NAME."
   echo "start-console-consumer    : Starting console-consumer for topic $TOPIC_NAME."
   echo "start-console-producer    : Starting console-producer for topic $TOPIC_NAME."
-	exit 1
+  echo "get-connectors            : Display the connector plugins available through the Kafka Connect REST API on host $KAFKA_LOCAL_WORKERNODE_FIRST_IP"
+  exit 1
 	;;
 esac
 
