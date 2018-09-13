@@ -23,6 +23,4 @@ maxClientCnxns=0
 initLimit={{ kafka_server_zookeeper_initLimit }}
 syncLimit={{ kafka_server_zookeeper_syncLimit }}
 
-{% for server in groups['kafka_brokers'] %}
-server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}
-{% endfor %}
+{{ zookeeper_properties_server_multiline_config }}

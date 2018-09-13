@@ -121,7 +121,8 @@ log.retention.check.interval.ms=300000
 # root directory for all kafka znodes.
 
 #zookeeper.connect=localhost:2181
-zookeeper.connect={% for node in groups['kafka_brokers'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}
+zookeeper.connect={{ kafka_zookeeper_connect }}
+
 
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000
