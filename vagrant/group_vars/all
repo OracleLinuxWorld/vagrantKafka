@@ -1,7 +1,6 @@
 ###
 ### Generic variables
 ### Applicable to ALL roles
-###
 
 # On which interface are we going to connect to the Kafka kafkabrokers
 #
@@ -25,26 +24,39 @@ port_kafka_rest_proxy: 8082
 port_kafka_schema_registry: 8081
 port_zookeeper: 2181
 
+# Zookeeper datadir
 zookeeper_datadir: "/var/lib/zookeeper"
+# Zookeeper list of hosts (e.g.: 172.28.129.201:2181,172.28.129.202:2181,172.28.129.203:2181)
+kafka_zookeeper_connect: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
+
+# Zookeeper multiline server config
+NEWLINE: "\n"
+zookeeper_properties_server_multiline_config: "{% for server in groups['kafka_brokers'] %}server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}{{ NEWLINE }}{% endfor %}"
 
 
-### /etc/kafka/consumer.properties
-#
-kafka_consumer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
-kafka_consumer_group_id: "test-consumer-group"
-
-# /etc/kafka/producer.properties
-#
-kafka_producer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
-kafka_producer_compression_type: "snappy"
+# Kafka security protocol (Valid values are: PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL)
+# Wether to use encryption or not on connections to brokers and connectors
+kafka_generic_security_protocol: "PLAINTEXT"
 
 
 
+
+###
+### Other (used for Ansible purposes instead of being used in kafka config)
+###
+
+# Timeout used in ansible playbooks to determine how long to wait for port x to become available
 wait_for_timeout: 180
 
-#############################
-# Define list of BROKER nodes
-kafka_brokers:         "{{ groups['kafka_brokers'] | to_json }}"
+
+
+###
+### Other (not used in playbooks, but for demo script)
+###
+
+kafka_broker_ips: "{% for node in groups['kafka_brokers'] %}{{ node }}{% if not loop.last %},{% endif %}{% endfor%}"
+kafka_workernode_ips: "{% for zknode in groups['kafka_worker_nodes'] %}{{ zknode }}{% if not loop.last %},{% endif %}{% endfor%}"
+
 
 ###
 ### MySQL settings
@@ -60,10 +72,24 @@ jdbc_host:          "{{ groups['mysql_db'][0] }}"
 jdbc_port:          3306
 
 
+###
+### Other, non-critical files
+###
+
+### /etc/kafka/consumer.properties
+#
+kafka_consumer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
+kafka_consumer_group_id: "test-consumer-group"
+
+# /etc/kafka/producer.properties
+#
+kafka_producer_bootstrap_servers: "{{ kafka_service_ip_address }}:9092"
+kafka_producer_compression_type: "snappy"
+
 
 ###
-### Other (not used in playbooks, but for demo script)
+### Unused?
 ###
 
-kafka_broker_ips: "{% for node in groups['kafka_brokers'] %}{{ node }}{% if not loop.last %},{% endif %}{% endfor%}"
-kafka_workernode_ips: "{% for zknode in groups['kafka_worker_nodes'] %}{{ zknode }}{% if not loop.last %},{% endif %}{% endfor%}"
+# Define list of BROKER nodes ()
+# kafka_brokers:         "{{ groups['kafka_brokers'] | to_json }}"

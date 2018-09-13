@@ -1,31 +1,21 @@
-###
-### role_kafka_schema_registry
-###
-
-# /etc/schema-registry/schema-registry.properties
+### /etc/schema-registry/schema-registry.properties
 # The name of the topic to store schemas in
 schema_registry_kafkastore_topic: "_schemas"
 
-kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}PLAINTEXT://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+# Kafkastore bootstrap servers
+kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
-# /etc/schema-registry/connect-avro-distributed.properties.j2
-# &
-# /etc/schema-registry/connect-avro-standalone.properties.j2
+### Both
+### /etc/schema-registry/connect-avro-distributed.properties.j2
+### /etc/schema-registry/connect-avro-standalone.properties.j2
 kafka_avro_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
-###
-### role_kafka_rest_proxy
-###
-
-# /etc/kafka-rest/kafka-rest.properties
-#
+### /etc/kafka-rest/kafka-rest.properties
 kafka_rest_id: "kafka-rest-test-server"
 kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
-
-kafka_rest_zookeeper_connect: "{% for zknode in groups['kafka_brokers'] %}{{ zknode }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
-
-kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}PLAINTEXT://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
-
+#kafka_rest_zookeeper_connect: "{% for zknode in groups['kafka_brokers'] %}{{ zknode }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
+kafka_rest_zookeeper_connect: "{{ kafka_zookeeper_connect}}"
+kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 kafka_rest_listeners: http://0.0.0.0:{{port_kafka_rest_proxy}}
 
 
@@ -41,20 +31,11 @@ kafka_connect_config_storage_replication_factor: "3"
 kafka_connect_status_storage_topic: "connect-status"
 kafka_connect_status_storage_replication_factor: "3"
 
-kafka_connect_security_protocol: "PLAINTEXT"
+kafka_connect_security_protocol: "{{ kafka_generic_security_protocol }}"
 
 ###
 ### role_kafka_connect_MySQL
 ###
-
-#Username password for schema used by the JDBC connector
-#jdbc_username:      'admin'
-#jdbc_password:      'admin'
-#jdbc_database:      'hello_world'
-#
-#Hostname and port for database
-#jdbc_host:          'localhost'
-#jdbc_port:          3306
 
 #The name of the MySQL connector
 mysql_connector_name:   'jdbc_source_mysql'
