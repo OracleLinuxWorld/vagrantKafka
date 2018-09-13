@@ -1,7 +1,9 @@
 # vagrantKafka
 Vagrant set of VMs to run Confluent Kafka on Oracle Linux.
 
-The setup that will be deployed is the following:
+The complete setup consists of 2 'data centers' to be able to test things like MirrorMaker and Replicator.
+
+A single DC consists of the following VMs:
 * 3x Kafka brokers running the following components:
   * the ZooKeeper ensemble and
   * Kafka broker instances
@@ -11,15 +13,36 @@ The setup that will be deployed is the following:
   * Kafka REST proxy (and API on port 8082)
   * Kafka Schema Registry (and Schema registry API on port 8081)
 
-# Regarding Ansible
-Please run the following commands:
-```
-vagrant up
-ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml
-```
+* 1x Confluent Control Center
 
-The initial Vagrant step does *not* provision the VMs.
-You need to explicitly run 'ansible-playbook'.
+* 1x MySQL node for testing MySQL source Connector
+
+* 1x single node Elasticsearch for testing Elasticsearch sink Connector
+
+
+# Makefile
+In the root of the project you will find a Makefile.
+This Makefile contains several options to control the environment.
+
+The most common options have been described below:
+
+* make (without arguments)
+Will spin up a single DC setup. After spinning up the VMs for a single DC setup Ansible will be automatically called to provision the VMs.
+
+* make [up-dc1 | up-dc2]
+Will only spin up either dc1 or dc2. No Ansible scripting will be done.
+
+* make up
+Will spin up both dc1 and dc2.
+
+* make [provision-dc1 | provision-dc2]
+Will only (re-) provision VMs belonging to either dc1 or dc2.
+Requires Vms to already be up.
+
+* make provision
+Will provision both dc1 and dc2.
+
+
 
 # Regarding port numbers that Kafka uses
 
@@ -63,36 +86,12 @@ Host kafka_node_01
 
 Please create a seperate SSH session with abovementioned details.
 
-In the tab "Advanced SSH settings" select "Use private key" and select the location of the
-"IdentityFile" as mentioned above.
+In the tab "Advanced SSH settings" select "Use private key" and select the location of the "IdentityFile" as mentioned above.
 
 
-# Notes on "Production Environment"
+# (re-) starting services
 
-The confluent control script that is pre-installed by the Confluent packages
-is very convenient for quickly setting up Kafka.
-
-However! Confluent does not recommend this to be used on production setups
-because a.o. it skips a number of important validation steps.
-
-Please use the scripts below to control the start/stop of kafka and its components.
-
-* Start ZooKeeper.  Run this command in its own terminal.
-$ <path-to-confluent>/bin/zookeeper-server-start <path-to-confluent>/etc/kafka/zookeeper.properties
-
-* Start Kafka.  Run this command in its own terminal.
-$ <path-to-confluent>/bin/kafka-server-start <path-to-confluent>/etc/kafka/server.properties
-
-* Start Schema Registry. Run this command in its own terminal.
-$ <path-to-confluent>/bin/schema-registry-start \
-<path-to-confluent>/etc/schema-registry/schema-registry.properties
-
-* Start Connect in distributed mode. Run this command in its own terminal.
-$ <path-to-confluent>/bin/connect-distributed \
-<path-to-confluent>/etc/schema-registry/connect-avro-distributed.properties
-
-
-Alternatively, use the Confluent controlscripts.
+For convenience, you will find all the Confluent Kafka service names below.
 The following services are available for use with systemctl:
 
 * confluent-control-center
@@ -102,3 +101,21 @@ The following services are available for use with systemctl:
 * confluent-ksql
 * confluent-kafka-rest
 * confluent-schema-registry
+
+Example:
+
+```
+[vagrant@kafka_broker_01 ~]$ sudo systemctl status confluent-kafka
+● confluent-kafka.service - Apache Kafka - broker
+   Loaded: loaded (/usr/lib/systemd/system/confluent-kafka.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2018-09-13 07:56:24 UTC; 45min ago
+     Docs: http://docs.confluent.io/
+ Main PID: 4273 (java)
+   CGroup: /system.slice/confluent-kafka.service
+           └─4273 java -Xmx1G -Xms1G -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent -Djava.awt.headless=true -Xl...
+
+(...)
+Hint: Some lines were ellipsized, use -l to show in full.
+[vagrant@kafka_broker_01 ~]$
+
+```
