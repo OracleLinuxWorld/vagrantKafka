@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "mysql_node_01" do |mysql_node_01|
     mysql_node_01.vm.box = "oraclelinuxworld/vagrant_kafka"
     mysql_node_01.vm.network :"private_network", ip: "172.28.129.206", auto_config: true
-    mysql_node_01.vm.network "forwarded_port", guest: 3306, host: 3306, protocol: "tcp"
+    mysql_node_01.vm.network "forwarded_port", guest: 3306, host: 13306, protocol: "tcp"
     mysql_node_01.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", "2"]
@@ -114,7 +114,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "elasticsearch_node_01" do |elasticsearch_node_01|
     elasticsearch_node_01.vm.box = "oraclelinuxworld/base_elasticsearch"
     elasticsearch_node_01.vm.network :"private_network", ip: "172.28.129.208", auto_config: true
-    elasticsearch_node_01.vm.network "forwarded_port", guest: 9200, host: 9200, protocol: "tcp"
+    elasticsearch_node_01.vm.network "forwarded_port", guest: 9200, host: 19200, protocol: "tcp"
     elasticsearch_node_01.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", "2"]
