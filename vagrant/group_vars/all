@@ -29,7 +29,7 @@ zookeeper_datadir: "/var/lib/zookeeper"
 # Zookeeper list of hosts (e.g.: 172.28.129.201:2181,172.28.129.202:2181,172.28.129.203:2181)
 kafka_zookeeper_connect: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
 
-# Zookeeper multiline server config
+# Zookeeper multiline server config in zookeeper.properties file
 NEWLINE: "\n"
 zookeeper_properties_server_multiline_config: "{% for server in groups['kafka_brokers'] %}server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}{{ NEWLINE }}{% endfor %}"
 
@@ -38,6 +38,8 @@ zookeeper_properties_server_multiline_config: "{% for server in groups['kafka_br
 # Wether to use encryption or not on connections to brokers and connectors
 kafka_generic_security_protocol: "PLAINTEXT"
 
+# Kafka broker list (example: 172.28.129.221:9092,172.28.129.222:9092,172.28.129.223:9092)
+kafka_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 
 
 
@@ -90,6 +92,3 @@ kafka_producer_compression_type: "snappy"
 ###
 ### Unused?
 ###
-
-# Define list of BROKER nodes ()
-# kafka_brokers:         "{{ groups['kafka_brokers'] | to_json }}"

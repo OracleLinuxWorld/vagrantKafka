@@ -13,9 +13,9 @@ kafka_avro_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ node 
 ### /etc/kafka-rest/kafka-rest.properties
 kafka_rest_id: "kafka-rest-test-server"
 kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
-#kafka_rest_zookeeper_connect: "{% for zknode in groups['kafka_brokers'] %}{{ zknode }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
 kafka_rest_zookeeper_connect: "{{ kafka_zookeeper_connect}}"
-kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+# kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+kafka_rest_bootstrap_servers: "{{ kafka_bootstrap_servers }}"
 kafka_rest_listeners: http://0.0.0.0:{{port_kafka_rest_proxy}}
 
 

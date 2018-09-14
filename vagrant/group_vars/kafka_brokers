@@ -15,10 +15,6 @@ kafka_server_listeners: "{{ kafka_generic_security_protocol }}://:9092"
 # kafka_advertised_listeners: address + port that is advertised to all other servers
 kafka_advertised_listeners: "{{ kafka_generic_security_protocol }}://{{ kafka_service_ip_address }}:{{ port_kafka_broker }}"
 
-# moved to group_vars/all because it is used for both brokers as workernodes
-#kafka_zookeeper_connect="{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
-
-# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
 kafka_server_zookeeper_initLimit: "5"
 kafka_server_zookeeper_syncLimit: "2"
 kafka_server_zookeeper_leaderport: "2888"
