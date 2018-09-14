@@ -61,33 +61,6 @@ Zookeeper election port             3888
 All these ports need to be opened up between all Kafka nodes.
 
 
-# Note for MobaXterm users!
-
-There is a 'bug' in MobaXterm that does not allow for the default 'vagrant ssh' commands.
-
-Please perform the following command:
-
-vagrant ssh-config
-
-This will produce the following output:
-
-```
-Host kafka_node_01
-  HostName 127.0.0.1
-  User vagrant
-  Port 2222
-  UserKnownHostsFile /dev/null
-  StrictHostKeyChecking no
-  PasswordAuthentication no
-  IdentityFile /cygdrive/d/Users/<USERNAME>/Documents/MobaXterm/home/Vagrant/Kafka/.vagrant/machines/kafka_node_01/virtualbox/private_key
-  IdentitiesOnly yes
-  LogLevel FATAL
-```
-
-Please create a seperate SSH session with abovementioned details.
-
-In the tab "Advanced SSH settings" select "Use private key" and select the location of the "IdentityFile" as mentioned above.
-
 
 # (re-) starting services
 
