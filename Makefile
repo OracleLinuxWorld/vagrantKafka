@@ -23,7 +23,7 @@ up-dc2:
 	vagrant up dc2_mysql_node_01
 	vagrant up dc2_elasticsearch_node_01
 
-up:	dc1 dc2
+up:	up-dc1 up-dc2
 
 provision-dc1:
 	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook.yml
