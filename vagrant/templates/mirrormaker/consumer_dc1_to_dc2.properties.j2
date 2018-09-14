@@ -1,0 +1,55 @@
+# MirrorMaker documentation:
+# https://kafka.apache.org/documentation/#basic_ops_mirror_maker
+# https://cwiki.apache.org/confluence/display/KAFKA/System+Tools#SystemTools-MirrorMaker
+# https://medium.com/real-time-streaming/apache-kafka-mirror-maker-1400efeca94d
+# Consumer configs: https://kafka.apache.org/documentation/#consumerconfigs
+# Producer configs: https://kafka.apache.org/documentation/#producerconfigs
+
+# PS: MirrorMaker SHOULD be executed on the MIRRORTARGET side
+
+###
+### Generic
+###
+
+# Security protocol (Valid values are: PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL)
+security.protocol={{ kafka_generic_security_protocol }}
+
+# Broker list (source target)
+bootstrap.servers=172.28.129.201:9092
+
+# Group ID & Client ID
+group.id=example-mirrormaker-group
+client.id=mirror_maker_consumer
+
+# RoundRobinAssignor will be the new default for better load balancing across brokers
+partition.assignment.strategy=org.apache.kafka.clients.consumer.RoundRobinAssignor
+
+# Make sure that NO internal topics get mirrored!  (consumer old style)
+exclude.internal.topics=true
+
+# how to (de-) serialize
+key.deserializer=org.apache.kafka.serialization.StringDeserializer
+value.deserializer=org.apache.kafka.serialization.ByteArrayDeserializer
+
+
+###
+### Other
+###
+
+# If true the consumer's offset will be periodically committed in the background.
+# consumer new style: enable.auto.commit=true|false
+# consumer old style: auto.commit.enabled=true|false
+#enable.auto.commit=true
+
+# auto.commit.interval.ms (consumer old style)
+# The frequency in milliseconds that the consumer offsets are auto-committed to Kafka if enable.auto.commit is set to true.
+# Default: 5000
+# auto.commit.interval.ms=5000
+
+# auto.offset.reset (consumer old style)
+# What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted):
+#  earliest: automatically reset the offset to the earliest offset
+#  latest: automatically reset the offset to the latest offset
+#  none: throw exception to the consumer if no previous offset is found for the consumer's group
+#  anything else: throw exception to the consumer.
+# auto.offset.reset=latest
