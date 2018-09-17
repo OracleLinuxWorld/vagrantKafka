@@ -27,12 +27,11 @@ port_zookeeper: 2181
 # Zookeeper datadir
 zookeeper_datadir: "/var/lib/zookeeper"
 # Zookeeper list of hosts (e.g.: 172.28.129.201:2181,172.28.129.202:2181,172.28.129.203:2181)
-kafka_zookeeper_connect: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
+kafka_zookeeper_connect: "{% for node in vars['play_hosts'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
 
 # Zookeeper multiline server config in zookeeper.properties file
 NEWLINE: "\n"
-zookeeper_properties_server_multiline_config: "{% for server in groups['kafka_brokers'] %}server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}{{ NEWLINE }}{% endfor %}"
-
+zookeeper_properties_server_multiline_config: "{% for server in vars['play_hosts'] %}server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}{{ NEWLINE }}{% endfor %}"
 
 # Kafka security protocol (Valid values are: PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL)
 # Wether to use encryption or not on connections to brokers and connectors
