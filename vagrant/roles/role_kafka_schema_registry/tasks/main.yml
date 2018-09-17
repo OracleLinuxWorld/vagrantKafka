@@ -39,8 +39,8 @@
 
   - debug:
       msg: "Starting services for Kafka schema registry..."
-    when:
-      - inventory_hostname in groups['kafka_worker_nodes']
+#    when:
+#      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-schema-registry
@@ -52,8 +52,8 @@
        enabled: True
     with_items:
        - confluent-schema-registry
-    when:
-       - inventory_hostname in groups['kafka_worker_nodes']
+#    when:
+#       - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-schema-registry

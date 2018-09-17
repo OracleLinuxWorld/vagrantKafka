@@ -34,8 +34,8 @@
        enabled: True
     with_items:
        - confluent-kafka-connect
-    when:
-       - inventory_hostname in groups['kafka_worker_nodes']
+#    when:
+#       - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-connect

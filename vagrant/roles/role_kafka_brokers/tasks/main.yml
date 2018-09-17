@@ -8,8 +8,8 @@
     register: kafka_server_broker_id
     tags:
       - kafka-broker-id
-    when:
-      - inventory_hostname in groups['kafka_brokers']
+#    when:
+#      - inventory_hostname in groups['kafka_brokers']
 
   - name: Give broker-id number
     debug:
@@ -22,8 +22,8 @@
     tags:
       - kafka-broker-id
       - kafka-zookeeper
-    when:
-      - inventory_hostname in groups['kafka_brokers']
+#    when:
+#      - inventory_hostname in groups['kafka_brokers']
 
 
 ###
@@ -39,8 +39,8 @@
       mode: 0755
     tags:
       - kafka-configfiles
-    when:
-      - inventory_hostname in groups['kafka_brokers']
+#    when:
+#      - inventory_hostname in groups['kafka_brokers']
 
   - name: Copying zookeeper properties config file
     template:
@@ -49,8 +49,8 @@
       mode: 0755
     tags:
       - kafka-configfiles
-    when:
-      - inventory_hostname in groups['kafka_brokers']
+#    when:
+#      - inventory_hostname in groups['kafka_brokers']
 
 
 
@@ -72,7 +72,7 @@
     with_items:
        - confluent-zookeeper
        - confluent-kafka
-    when:
-       - inventory_hostname in groups['kafka_brokers']
+#    when:
+#       - inventory_hostname in groups['kafka_brokers']
     tags:
       - kafka-systemctl

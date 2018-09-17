@@ -8,42 +8,6 @@
     tags:
       - set-hostname
 
-  - name: All the hosts known in the inventory file group kafka_brokers
-    debug:
-      msg="{{ item }}"
-    with_items:
-      - "{{ groups['kafka_brokers'] }}"
-    when:
-      - inventory_hostname in groups['kafka_brokers']
-
-  - name: All the hosts known in the inventory file group kafka_worker_nodes
-    debug:
-      msg="{{ item }}"
-    with_items:
-      - "{{ groups['kafka_worker_nodes'] }}"
-    when:
-      - inventory_hostname in groups['kafka_worker_nodes']
-
-  - name: All the hosts known in the inventory file group elasticsearch_nodes
-    debug:
-      msg="{{ item }}"
-    with_items:
-      - "{{ groups['elasticsearch_nodes'] }}"
-    when:
-      - inventory_hostname in groups['elasticsearch_nodes']
-
-  - name: Kafka Service IP address
-    debug:
-      msg="Kafka service IP address is {{ item }}"
-    with_items:
-      - "{{ kafka_service_ip_address }}"
-
-  - name: Kafka Management IP address
-    debug:
-      msg="Kafka management IP address is {{ item }}"
-    with_items:
-      - "{{ kafka_mgmt_ip_address }}"
-
   - name: Setting host fact for service IP address
     set_fact:
       service_ip: >

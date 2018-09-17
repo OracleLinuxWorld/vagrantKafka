@@ -26,10 +26,10 @@ up-dc2:
 up:	up-dc1 up-dc2
 
 provision-dc1:
-	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook.yml
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml --limit "dc1"
 
 provision-dc2:
-	ansible-playbook -i vagrant/inventory/dc-2/hosts vagrant/ansible-playbook.yml
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml --limit "dc2"
 
 provision:	provision-dc1 provision-dc2
 
@@ -54,13 +54,13 @@ elastic_allocation:
 elastic: elastic_health elastic_indices elastic_allocation
 
 restart-dc1:
-	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook_restart_kafka_services.yml
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook_restart_kafka_services.yml  --limit "dc1"
 
 restart-dc2:
-	ansible-playbook -i vagrant/inventory/dc-2/hosts vagrant/ansible-playbook_restart_kafka_services.yml
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook_restart_kafka_services.yml  --limit "dc2"
 
 restart: restart-dc1 restart-dc2
 
 kafka-demo:
-	ansible-playbook -i vagrant/inventory/dc-1/hosts vagrant/ansible-playbook_demo_script.yml
-	ansible-playbook -i vagrant/inventory/dc-2/hosts vagrant/ansible-playbook_demo_script.yml
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook_demo_script.yml  --limit "dc1"
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook_demo_script.yml  --limit "dc2"
