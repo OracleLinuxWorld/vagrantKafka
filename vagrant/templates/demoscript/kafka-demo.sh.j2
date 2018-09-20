@@ -50,13 +50,13 @@ done
 
 create_and_verify_topic() {
 # Check if topic exists by checking the REST API on worker node
-TOPIC_EXISTS=`curl -s -XGET -H 'Accept: application/vnd.kafka.v2+json' 'http://$KAFKA_LOCAL_WORKERNODE_FIRST_IP:$PORT_REST_PROXY/topics/$TOPIC_NAME' | jq  '.message | @text'`
+TOPIC_EXISTS=`curl -s -XGET -H "Accept: application/vnd.kafka.v2+json" "http://$KAFKA_LOCAL_WORKERNODE_FIRST_IP:$PORT_REST_PROXY/topics/$TOPIC_NAME" | jq  '.message | @text'`
 
 # Create topic if not exists
 if   [[ "$TOPIC_EXISTS" =~ "Topic not found" ]]; then
     echo "OK: Topic $TOPIC_NAME does not exist yet."
     echo "Creating test topic: $TOPIC_NAME"
-    echo "Talking to broker: $FIRST_BROKER"
+    echo "Talking to broker: $KAFKA_LOCAL_BROKER_FIRST_IP"
     kafka-topics --create --zookeeper $KAFKA_LOCAL_BROKER_FIRST_IP:$PORT_ZOOKEEPER --replication-factor $REPLICATION_FACTOR --partitions $PARTITIONS --topic $TOPIC_NAME
     sleep 2
 else
@@ -71,7 +71,7 @@ kafka-topics --zookeeper $KAFKA_LOCAL_BROKER_FIRST_IP:$PORT_ZOOKEEPER --describe
 
 echo ""
 echo "Verify topic $TOPIC_NAME through REST PROXY:"
-curl -s -XGET -H 'Accept: application/vnd.kafka.v2+json' 'http://$KAFKA_LOCAL_WORKERNODE_FIRST_IP:$PORT_REST_PROXY/topics/$TOPIC_NAME' | jq '.'
+curl -s -XGET -H "Accept: application/vnd.kafka.v2+json" "http://$KAFKA_LOCAL_WORKERNODE_FIRST_IP:$PORT_REST_PROXY/topics/$TOPIC_NAME" | jq '.'
 }
 
 
