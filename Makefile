@@ -1,7 +1,11 @@
-.PHONY: all up-dc1 up-dc2 up provision-dc1 provision-dc2 provision restart-dc1 restart-dc2 restart brokers topics demo elastic_health elastic_indices elastic_allocation elastic
+.PHONY: all up-dc1 up-dc2 up provision-dc1 provision-dc2 provision restart-dc1 restart-dc2 restart brokers topics demo elastic_health elastic_indices elastic_allocation elastic all-dc1 all-dc2
 .DEFAULT_GOAL := all
 
-all:	up-dc1 provision-dc1 restart-dc1
+all: all-dc1 all-dc2 kafka-demo 
+
+all-dc1: up-dc1 provision-dc1 restart-dc1
+
+all-dc2: up-dc1 provision-dc1 restart-dc1
 
 up-dc1:
 	vagrant up kafka_broker_01
