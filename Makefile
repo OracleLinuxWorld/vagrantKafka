@@ -31,7 +31,7 @@ provision-dc1:
 provision-dc2:
 	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml --limit "dc2"
 
-provision:	provision-dc1 provision-dc2
+provision:	provision-dc1 provision-dc2 kafka-demo
 
 brokers:
 	curl -s -XGET -H 'Accept: application/vnd.kafka.v2+json' 'http://172.28.129.204:8082/brokers' | jq '.'
