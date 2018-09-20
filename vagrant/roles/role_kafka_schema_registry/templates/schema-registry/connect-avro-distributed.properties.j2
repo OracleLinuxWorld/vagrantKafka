@@ -3,19 +3,19 @@
 # Confluent Platform with all services running on their default ports.
 
 # Bootstrap Kafka servers. If multiple servers are specified, they should be comma-separated.
-bootstrap.servers={{ kafka_avro_bootstrap_servers }}
+bootstrap.servers={{ kafka_bootstrap_servers }}
 
 # The group ID is a unique identifier for the set of workers that form a single Kafka Connect
 # cluster
-group.id=connect-cluster
+group.id={{ connect_avro_group_id }}
 
 # The converters specify the format of data in Kafka and how to translate it into Connect data.
 # Every Connect user will need to configure these based on the format they want their data in
 # when loaded from or stored into Kafka
 key.converter=io.confluent.connect.avro.AvroConverter
-key.converter.schema.registry.url=http://{{ kafka_service_ip_address }}:8081
+key.converter.schema.registry.url=http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}
 value.converter=io.confluent.connect.avro.AvroConverter
-value.converter.schema.registry.url=http://{{ kafka_service_ip_address }}:8081
+value.converter.schema.registry.url=http://{{ kafka_service_ip_address }}:{{ port_kafka_schema_registry }}
 
 # Internal Storage Topics.
 #
@@ -37,9 +37,9 @@ status.storage.topic=connect-statuses
 # only a single broker, we set the replication factor here to just 1. That's okay for the examples, but
 # ALWAYS use a replication factor of AT LEAST 3 for production environments to reduce the risk of
 # losing connector offsets, configurations, and status.
-config.storage.replication.factor=1
-offset.storage.replication.factor=1
-status.storage.replication.factor=1
+config.storage.replication.factor={{ schema_registry_config_storage_replication_factor }}
+offset.storage.replication.factor={{ schema_registry_offset_storage_replication_factor }}
+status.storage.replication.factor={{ schema_registry_status_storage_replication_factor }}
 
 # The config storage topic must have a single partition, and this cannot be changed via properties.
 # Offsets for all connectors and tasks are written quite frequently and therefore the offset topic
@@ -65,11 +65,11 @@ internal.value.converter.schemas.enable=false
 # These are provided to inform the user about the presence of the REST host and port configs
 # Hostname & Port for the REST API to listen on. If this is set, it will bind to the interface used to listen to requests.
 rest.host.name={{ kafka_service_ip_address }}
-rest.port=8083
+rest.port={{ port_kafka_connect }}
 
 # The Hostname & Port that will be given out to other workers to connect to i.e. URLs that are routable from other servers.
 rest.advertised.host.name={{ kafka_service_ip_address }}
-rest.advertised.port=8083
+rest.advertised.port={{ port_kafka_connect }}
 
 # Set to a list of filesystem paths separated by commas (,) to enable class loading isolation for plugins
 # (connectors, converters, transformations). The list should consist of top level directories that include

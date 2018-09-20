@@ -1,7 +1,7 @@
 ###
 ### Set up Kafka REST proxy
 
-- hosts:         kafka_worker_nodes
+- hosts:         kafka_worker_nodes,kafka_brokers
   remote_user:   vagrant
   become:        true
   become_user:   root

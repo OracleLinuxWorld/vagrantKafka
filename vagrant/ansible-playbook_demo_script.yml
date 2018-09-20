@@ -1,7 +1,7 @@
 ###
 ### This playbook will push a demo script to /usr/local/bin
 
-- hosts:         kafka_worker_nodes
+- hosts:         kafka_brokers, kafka_worker_nodes
   remote_user:   vagrant
   become:        true
   become_user:   root
@@ -10,7 +10,6 @@
 
   tasks:
 
-
   - name: Install pre requisites
     yum:
       name: "{{ item }}"
@@ -18,6 +17,8 @@
       update_cache: yes
     with_items:
       - nc
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
 
 ### /usr/local/bin/kafka-demo.sh
 
@@ -33,7 +34,7 @@
       src: templates/demoscript/kafka-demo.sh.j2
       dest: "/usr/local/bin/kafka-demo.sh"
       mode: 0755
-    tags:
-      - kafka-demo
     when:
       - inventory_hostname in groups['kafka_worker_nodes']
+    tags:
+      - kafka-demo

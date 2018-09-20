@@ -70,9 +70,10 @@ num.recovery.threads.per.data.dir=1
 ############################# Internal Topic Settings  #############################
 # The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"
 # For anything other than development testing, a value greater than 1 is recommended for to ensure availability such as 3.
-offsets.topic.replication.factor=1
-transaction.state.log.replication.factor=1
-transaction.state.log.min.isr=1
+offsets.topic.replication.factor={{ kafka_internal_offsets_topic_replication_factor }}
+transaction.state.log.replication.factor={{ kafka_internal_transaction_state_log_replication_factor }}
+transaction.state.log.min.isr={{ kafka_internal_transaction_state_log_min_isr }}
+
 
 ############################# Log Flush Policy #############################
 
@@ -99,7 +100,7 @@ transaction.state.log.min.isr=1
 # from the end of the log.
 
 # The minimum age of a log file to be eligible for deletion due to age
-log.retention.hours=168
+log.retention.hours={{ log_retention_hours }}
 
 # A size-based retention policy for logs. Segments are pruned from the log unless the remaining
 # segments drop below log.retention.bytes. Functions independently of log.retention.hours.
@@ -114,15 +115,7 @@ log.retention.check.interval.ms=300000
 
 ############################# Zookeeper #############################
 
-# Zookeeper connection string (see zookeeper docs for details).
-# This is a comma separated host:port pairs, each corresponding to a zk
-# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
-# You can also append an optional chroot string to the urls to specify the
-# root directory for all kafka znodes.
-
-#zookeeper.connect=localhost:2181
 zookeeper.connect={{ kafka_zookeeper_connect }}
-
 
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000
@@ -154,7 +147,7 @@ confluent.support.metrics.enable={{ kafka_server_confluent_support_metrics_enabl
 # The default value for this is 3 seconds.
 # We override this to 0 here as it makes for a better out-of-the-box experience for development and testing.
 # However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.
-group.initial.rebalance.delay.ms=0
+group.initial.rebalance.delay.ms={{ group_initial_rebalance_delay_ms }}
 
 
 # The customer ID under which support metrics will be collected and

@@ -19,8 +19,8 @@
     status_code: 201, 200
     body_format: json
 # This will be a problem because a single node is necessary instead of the whole group
-#  when:
-#    - inventory_hostname in groups['kafka_worker_nodes'][0]
+  when:
+    - inventory_hostname in groups['kafka_worker_nodes'][0]
 
 - name: Check connector status
   uri:

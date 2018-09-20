@@ -1,27 +1,38 @@
-### /etc/schema-registry/schema-registry.properties
+###
+### Schema Registry & Connect AVRO properties
+### (schema-registry.properties, connect-avro-distributed.properties & connect-avro-standalone.properties)
+###
+
+# Security protocol specific for Schema Registry
+kafka_schemaregistry_security_protocol: "{{ kafka_generic_security_protocol }}"
+
 # The name of the topic to store schemas in
 schema_registry_kafkastore_topic: "_schemas"
 
-# Kafkastore bootstrap servers
-kafka_kafkastore_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+schema_registry_config_storage_replication_factor: "3"
+schema_registry_offset_storage_replication_factor: "3"
+schema_registry_status_storage_replication_factor: "3"
 
-### Both
-### /etc/schema-registry/connect-avro-distributed.properties.j2
-### /etc/schema-registry/connect-avro-standalone.properties.j2
-kafka_avro_bootstrap_servers: "{% for node in groups['kafka_brokers'] %}{{ node }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+connect_avro_group_id: "connect-cluster"
+
+
+###
+### Kafka REST Proxy
+###
 
 ### /etc/kafka-rest/kafka-rest.properties
 kafka_rest_id: "kafka-rest-test-server"
 kafka_rest_schema_registry_url: "http://{{ kafka_service_ip_address }}:8081"
 kafka_rest_zookeeper_connect: "{{ kafka_zookeeper_connect}}"
-# kafka_rest_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
 kafka_rest_bootstrap_servers: "{{ kafka_bootstrap_servers }}"
 kafka_rest_listeners: http://0.0.0.0:{{port_kafka_rest_proxy}}
 
 
 ###
-### role_kafka_connect_rest
+### Kafka Connect REST
 ###
+
+kafka_connect_security_protocol: "{{ kafka_generic_security_protocol }}"
 
 kafka_connect_group_id: "connect-cluster"
 kafka_connect_offset_storage_topic: "connect-offsets"
@@ -31,7 +42,6 @@ kafka_connect_config_storage_replication_factor: "3"
 kafka_connect_status_storage_topic: "connect-status"
 kafka_connect_status_storage_replication_factor: "3"
 
-kafka_connect_security_protocol: "{{ kafka_generic_security_protocol }}"
 
 ###
 ### role_kafka_connect_MySQL
@@ -40,9 +50,26 @@ kafka_connect_security_protocol: "{{ kafka_generic_security_protocol }}"
 #The name of the MySQL connector
 mysql_connector_name:   'jdbc_source_mysql'
 
+
 ###
 ### role_kafka_sink_ElasticSearch
 ###
 
 elastic_server_url:     "http://{{ groups['elasticsearch_nodes'][0] }}:9200"
 elastic_sink_name:       'elastic_sink_connector'
+
+
+
+###
+### MirrorMaker
+###
+
+### Note:
+### only needs to run at the TARGET destination
+
+### Config files
+mirrormaker_consumer_config: "/etc/kafka/consumer_dc1_to_dc2.properties"
+mirrormaker_producer_config: "/etc/kafka/producer_dc1_to_dc2.properties"
+
+### Space separated list of topics needed to be replicated
+mirrormaker_topic_whitelist: "test"

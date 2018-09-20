@@ -1,7 +1,9 @@
 ###
 ### Set up Kafka schema registry
 
-- hosts:         kafka_worker_nodes
+# Schema registry is deployed on worker nodes, brokers are included in play to determine broker list only!
+
+- hosts:         kafka_brokers, kafka_worker_nodes
   remote_user:   vagrant
   become:        true
   become_user:   root

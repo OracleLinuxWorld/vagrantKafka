@@ -30,7 +30,7 @@ dc2_kafka_brokers
 
 [kafka_worker_nodes:children]
 dc1_kafka_worker_nodes
-dc1_kafka_worker_nodes
+dc2_kafka_worker_nodes
 
 
 ###

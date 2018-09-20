@@ -9,6 +9,8 @@
       src: templates/kafka/connect-distributed.properties.j2
       dest: /etc/kafka/connect-distributed.properties
       mode: 0755
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-configfiles
       - kafka-connect
@@ -34,8 +36,8 @@
        enabled: True
     with_items:
        - confluent-kafka-connect
-#    when:
-#       - inventory_hostname in groups['kafka_worker_nodes']
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-connect

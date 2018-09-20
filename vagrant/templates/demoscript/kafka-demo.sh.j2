@@ -16,13 +16,12 @@ umask 077
 
 export TOPIC_NAME="test"
 export REPLICATION_FACTOR="3"
-export PARTITIONS="3"
+export PARTITIONS="5"
 
 export PORT_BROKER="9092"
 export PORT_REST_PROXY="8082"
 export PORT_KAFKA_CONNECT_REST="8083"
 export PORT_ZOOKEEPER="2181"
-
 
 
 # comma separated list
@@ -123,32 +122,6 @@ curl -s -XGET -H "Accept: application/json" "http://$KAFKA_LOCAL_WORKERNODE_FIRS
 ###
 
 case "${1:-''}" in
-  'start-kafka-connect')
-        echo "Start Kafka Connect (distributed)... This may take a couple of minutes..."
-        echo ""
-        su -l {{ kafka_username }} -c '/bin/connect-distributed /etc/kafka/connect-distributed.properties & 2>&1 > /dev/null'
-        ;;
-
-
-
-  'check-rest-api')
-        echo "Check REST API..."
-        echo ""
-        su -l {{ kafka_username }} -c 'curl -s http://localhost:8083/ | jq '.''
-        ;;
-
-  'check-connector-plugins')
-        echo "Check Connector plugins..."
-        echo ""
-        su -l {{ kafka_username }} -c 'curl -s http://127.0.0.1:8083/connector-plugins | jq '.''
-        ;;
-
-  'get-topics')
-        echo "Get topics..."
-        echo ""
-        su -l {{ kafka_username }} -c 'curl -s http://127.0.0.1:8082/topics | jq '.''
-        ;;
-
   'zookeeper-status')
         echo "Get Zookeeper status..."
         get_zookeeper_status
@@ -177,15 +150,6 @@ case "${1:-''}" in
   'get-connectors')
         get_connectors
         ;;
-
-
-  'restart')
-        echo "Restart ALL services"
-        echo ""
-	      set +e; $SELF stop; set -e
-   	    $SELF stop
-	      $SELF start
-	      ;;
 
   *)
   echo ""

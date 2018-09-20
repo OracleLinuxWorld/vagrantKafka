@@ -1,63 +1,76 @@
 ###
-### Generic variables
-### Applicable to ALL roles
+### Interfaces, IP addresses and network ports
+###
 
-# On which interface are we going to connect to the Kafka kafkabrokers
-#
-# PS: the hostvars behaviour as used below might be deprecated in a later Ansible 2.5.x release
-# When a suitable vars dict method is available then rewrite the lines below
-#
+# Define the roles of the various 'physical' interfaces on the VMs
 kafka_mgmt_interface: "eth0"
 kafka_service_interface: "eth1"
+
+# Define the IP addresses for those interfaces
 kafka_mgmt_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_mgmt_interface].ipv4.address }}"
 kafka_service_ip_address: "{{ hostvars[inventory_hostname]['ansible_' + kafka_service_interface].ipv4.address }}"
 
-# Used for creating Unix user and setting permissions
-# Is also the userid that owns the processes of the whole stack
-kafka_groupname: "cp-kafka"
-kafka_username: "confluent"
-
-# Network ports
+# Define the various network ports for the applications
 port_kafka_broker: 9092
 port_kafka_connect: 8083
 port_kafka_rest_proxy: 8082
 port_kafka_schema_registry: 8081
 port_zookeeper: 2181
 
-# Zookeeper datadir
-zookeeper_datadir: "/var/lib/zookeeper"
-# Zookeeper list of hosts (e.g.: 172.28.129.201:2181,172.28.129.202:2181,172.28.129.203:2181)
-kafka_zookeeper_connect: "{% for node in vars['play_hosts'] %}{{ node }}:{{port_zookeeper}}{% if not loop.last %},{% endif %}{% endfor%}"
 
-# Zookeeper multiline server config in zookeeper.properties file
-NEWLINE: "\n"
-zookeeper_properties_server_multiline_config: "{% for server in vars['play_hosts'] %}server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}{{ NEWLINE }}{% endfor %}"
+###
+### Security
+###
 
 # Kafka security protocol (Valid values are: PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL)
 # Wether to use encryption or not on connections to brokers and connectors
 kafka_generic_security_protocol: "PLAINTEXT"
 
-# Kafka broker list (example: 172.28.129.221:9092,172.28.129.222:9092,172.28.129.223:9092)
-kafka_bootstrap_servers: "{% for bsnode in groups['kafka_brokers'] %}{{ kafka_generic_security_protocol }}://{{ bsnode }}:{{port_kafka_broker}}{% if not loop.last %},{% endif %}{% endfor%}"
+
+###
+### Zookeeper
+###
+
+# Zookeeper datadir
+zookeeper_datadir: "/var/lib/zookeeper"
+
+# Zookeeper list of hosts (e.g.: 172.28.129.201:2181,172.28.129.202:2181,172.28.129.203:2181)
+kafka_zookeeper_connect: "
+{%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_brokers']) -%}
+{{ node }}:{{ port_zookeeper }}{% if not loop.last %},{% endif %}
+{% endfor%}
+"
+
+# Zookeeper multiline server config in zookeeper.properties file
+NEWLINE: "\n"
+zookeeper_properties_server_multiline_config: "{% for server in vars['ansible_play_hosts'] %}server.{{loop.index}}={{server}}:{{kafka_server_zookeeper_leaderport}}:{{kafka_server_zookeeper_electionport}}{{ NEWLINE }}{% endfor %}"
 
 
 
 ###
-### Other (used for Ansible purposes instead of being used in kafka config)
+### Kafka - bootstrap servers etc
 ###
 
-# Timeout used in ansible playbooks to determine how long to wait for port x to become available
-wait_for_timeout: 180
+# Example content: "172.28.129.221:9092,172.28.129.222:9092,172.28.129.223:9092"
+kafka_bootstrap_servers: "
+{%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_brokers']) -%}
+{{ node }}:{{ port_kafka_broker }}{% if not loop.last %},{% endif %}
+{% endfor%}
+"
 
+# Example content: "172.28.129.201, 172.28.129.202, 172.28.129.203  "
+kafka_broker_ips: "
+{%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_brokers']) -%}
+{{ node }}{% if not loop.last %},{% endif %}
+{% endfor%}
+"
 
-
-###
-### Other (not used in playbooks, but for demo script)
-###
-
-kafka_broker_ips: "{% for node in groups['kafka_brokers'] %}{{ node }}{% if not loop.last %},{% endif %}{% endfor%}"
-kafka_workernode_ips: "{% for zknode in groups['kafka_worker_nodes'] %}{{ zknode }}{% if not loop.last %},{% endif %}{% endfor%}"
-
+# Example content: "172.28.129.204, 172.28.129.205  "
+kafka_workernode_ips: "
+{%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_worker_nodes']) -%}
+{{ node }}{% if not loop.last %},{% endif %}
+{% endfor%}
+"
 
 ###
 ### MySQL settings
@@ -89,5 +102,8 @@ kafka_producer_compression_type: "snappy"
 
 
 ###
-### Unused?
+### Ansible playbook purposes
 ###
+
+# Timeout used in ansible playbooks to determine how long to wait for port x to become available
+wait_for_timeout: 180

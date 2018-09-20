@@ -9,6 +9,8 @@
       src: templates/schema-registry/connect-avro-distributed.properties.j2
       dest: /etc/schema-registry/connect-avro-distributed.properties
       mode: 0755
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-configfiles
       - kafka-schema-registry
@@ -18,6 +20,8 @@
       src: templates/schema-registry/connect-avro-standalone.properties.j2
       dest: /etc/schema-registry/connect-avro-standalone.properties
       mode: 0755
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-configfiles
       - kafka-schema-registry
@@ -27,6 +31,8 @@
       src: templates/schema-registry/schema-registry.properties.j2
       dest: /etc/schema-registry/schema-registry.properties
       mode: 0755
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-configfiles
       - kafka-schema-registry
@@ -39,8 +45,8 @@
 
   - debug:
       msg: "Starting services for Kafka schema registry..."
-#    when:
-#      - inventory_hostname in groups['kafka_worker_nodes']
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-schema-registry
@@ -52,8 +58,8 @@
        enabled: True
     with_items:
        - confluent-schema-registry
-#    when:
-#       - inventory_hostname in groups['kafka_worker_nodes']
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-schema-registry

@@ -9,6 +9,8 @@
       src: templates/kafka-rest/kafka-rest.properties.j2
       dest: /etc/kafka-rest/kafka-rest.properties
       mode: 0755
+    when:
+      - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-configfiles
 
@@ -33,8 +35,8 @@
        enabled: True
     with_items:
        - confluent-kafka-rest
-#    when:
-#       - inventory_hostname in groups['kafka_worker_nodes']
+    when:
+       - inventory_hostname in groups['kafka_worker_nodes']
     tags:
       - kafka-systemctl
       - kafka-rest-proxy
