@@ -26,7 +26,7 @@ client.id={{ kafka_service_ip_address }}
 
 
 # A list of host/port pairs to use for establishing the initial connection to the Kafka cluster.
-bootstrap.servers={{ kafka_rest_bootstrap_servers }}
+bootstrap.servers={{ kafka_bootstrap_servers }}
 
 # unique name for the cluster, used in forming the Connect cluster group. Note that this must not conflict with consumer group IDs
 group.id={{ kafka_connect_group_id }}
@@ -74,7 +74,7 @@ offset.flush.interval.ms=10000
 
 # These are provided to inform the user about the presence of the REST host and port configs
 # Hostname & Port for the REST API to listen on. If this is set, it will bind to the interface used to listen to requests.
-rest.host.name={{ kafka_service_ip_address }}
+rest.host.name=0.0.0.0
 rest.port={{ port_kafka_connect }}
 
 # The Hostname & Port that will be given out to other workers to connect to i.e. URLs that are routable from other servers.

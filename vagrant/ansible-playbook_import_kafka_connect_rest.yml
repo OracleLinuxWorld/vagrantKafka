@@ -1,7 +1,7 @@
 ###
 ### Set up Kafka Connect Distributed
 
-- hosts:         kafka_worker_nodes
+- hosts:         kafka_brokers,kafka_worker_nodes
   remote_user:   vagrant
   become:        true
   become_user:   root
