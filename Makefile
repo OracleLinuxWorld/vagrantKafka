@@ -5,7 +5,7 @@ all: all-dc1 all-dc2 kafka-demo
 
 all-dc1: up-dc1 provision-dc1 restart-dc1
 
-all-dc2: up-dc1 provision-dc1 restart-dc1
+all-dc2: up-dc2 provision-dc2 restart-dc2
 
 up-dc1:
 	vagrant up kafka_broker_01
