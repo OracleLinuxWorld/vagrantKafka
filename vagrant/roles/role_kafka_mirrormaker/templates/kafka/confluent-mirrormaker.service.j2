@@ -1,0 +1,12 @@
+[Unit]
+Description=Apache Kafka - MirrorMaker
+
+[Service]
+Type=simple
+User=cp-kafka
+Group=confluent
+ExecStart=/bin/kafka-mirror-maker --consumer.config {{ mirrormaker_consumer_config }} --producer.config {{ mirrormaker_producer_config }} --num.streams {{ mirrormaker_num_streams }} --abort.on.send.failure {{ mirrormaker_abort_on_failure }} --whitelist "{{ mirrormaker_topic_whitelist }}"
+TimeoutStopSec=180
+Restart=no
+
+[Install]

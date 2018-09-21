@@ -38,7 +38,7 @@ zookeeper_datadir: "/var/lib/zookeeper"
 kafka_zookeeper_connect: "
 {%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_brokers']) -%}
 {{ node }}:{{ port_zookeeper }}{% if not loop.last %},{% endif %}
-{% endfor%}
+{%- endfor%}
 "
 
 # Zookeeper multiline server config in zookeeper.properties file
@@ -55,21 +55,21 @@ zookeeper_properties_server_multiline_config: "{% for server in vars['ansible_pl
 kafka_bootstrap_servers: "
 {%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_brokers']) -%}
 {{ node }}:{{ port_kafka_broker }}{% if not loop.last %},{% endif %}
-{% endfor%}
+{%- endfor %}
 "
 
 # Example content: "172.28.129.201, 172.28.129.202, 172.28.129.203  "
 kafka_broker_ips: "
 {%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_brokers']) -%}
 {{ node }}{% if not loop.last %},{% endif %}
-{% endfor%}
+{%- endfor %}
 "
 
 # Example content: "172.28.129.204, 172.28.129.205  "
 kafka_workernode_ips: "
 {%- for node in vars['ansible_play_hosts'] | intersect(groups['kafka_worker_nodes']) -%}
 {{ node }}{% if not loop.last %},{% endif %}
-{% endfor%}
+{%- endfor %}
 "
 
 ###

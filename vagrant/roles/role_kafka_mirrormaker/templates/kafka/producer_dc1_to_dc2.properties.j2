@@ -15,13 +15,13 @@
 security.protocol={{ kafka_generic_security_protocol }}
 
 # Broker list (destination target)
-bootstrap.servers={{ kafka_bootstrap_servers }}
+bootstrap.servers={{ mirrormaker_target_bootstrap_servers }}
 
 # Compression (valid values are none, gzip, snappy, or lz4)
-compression.type=none
+compression.type={{ mirrormaker_target_compression_type }}
 
 # For additional traceability each producer should use this identifier
-client.id=mirror_maker_producer
+client.id={{ mirrormaker_target_client_id }}
 
 key.serializer=org.apache.kafka.serialization.StringSerializer
 value.serializer=org.apache.kafka.serialization.ByteArraySerializer
@@ -32,16 +32,16 @@ value.serializer=org.apache.kafka.serialization.ByteArraySerializer
 ###
 
 # Mirror maker will only send one request to a broker at any given point.
-max.in.flight.requests.per.connection=1
+max.in.flight.requests.per.connection={{ mirrormaker_target_max_in_flight_requests_per_connection }}
 
 # Setting a value greater than zero will cause the client to resend any request that fails with a potentially transient error.
-retries=Int.MaxValue
+# retries={{ mirrormaker_target_retries }}
 
 # When writing to Kafka, producers can choose whether they wait for the message to be acknowledged by 0,1 or all (-1) replicas.
-acks=all
+acks={{ mirrormaker_target_acks }}
 
 # Buffer data when broker indicates that it can receive no more data
-block.on.buffer.full=true
+# block.on.buffer.full={{ mirrormaker_target_block_on_buffer_full }}
 
 
 ###
@@ -56,7 +56,7 @@ block.on.buffer.full=true
 #   acks must be 'all'.
 # If these values are not explicitly set by the user, suitable values will be chosen.
 # If incompatible values are set, a ConfigException will be thrown.
-enable.idempotence=true
+enable.idempotence={{ mirrormaker_target_enable_idempotence }}
 
 
 ###

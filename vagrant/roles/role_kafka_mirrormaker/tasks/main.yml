@@ -1,0 +1,70 @@
+###
+### Templating config files
+###
+
+### /etc/kafka
+
+  - name: Copying /usr/lib/systemd/system/confluent-mirrormaker.service
+    template:
+      src: templates/kafka/confluent-mirrormaker.service.j2
+      dest: /usr/lib/systemd/system/confluent-mirrormaker.service
+      mode: 0644
+    when:
+      - inventory_hostname in groups['dc2_kafka_worker_nodes']
+    tags:
+      - mirrormaker
+
+  - name: Copying /etc/kafka/consumer_dc1_to_dc2.properties
+    template:
+      src: templates/kafka/consumer_dc1_to_dc2.properties.j2
+      dest: /etc/kafka/consumer_dc1_to_dc2.properties
+      mode: 0755
+    when:
+      - inventory_hostname in groups['dc2_kafka_worker_nodes']
+    tags:
+      - mirrormaker
+
+  - name: Copying /etc/kafka/producer_dc1_to_dc2.properties
+    template:
+      src: templates/kafka/producer_dc1_to_dc2.properties.j2
+      dest: /etc/kafka/producer_dc1_to_dc2.properties
+      mode: 0755
+    when:
+      - inventory_hostname in groups['dc2_kafka_worker_nodes']
+    tags:
+      - mirrormaker
+
+  - name: Copying /etc/kafka/tools-log4j.properties
+    template:
+      src: templates/kafka/tools-log4j.properties.j2
+      dest: /etc/kafka/tools-log4j.properties
+      mode: 0755
+    when:
+      - inventory_hostname in groups['dc2_kafka_worker_nodes']
+    tags:
+      - mirrormaker
+
+#############################################################################
+###
+### Enabling and starting Kafka services at boot
+###
+
+  - debug:
+      msg: "Starting services for Mirrormaker..."
+    when:
+      - inventory_hostname in groups['dc2_kafka_worker_nodes']
+    tags:
+      - mirrormaker
+
+  - name: Start and enable services at boot time
+    systemd:
+       name: "{{ item }}"
+       daemon_reload: yes
+       state: started
+       enabled: True
+    with_items:
+       - confluent-mirrormaker
+    when:
+       - inventory_hostname in groups['dc2_kafka_worker_nodes']
+    tags:
+      - mirrormaker

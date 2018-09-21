@@ -15,17 +15,17 @@
 security.protocol={{ kafka_generic_security_protocol }}
 
 # Broker list (source target)
-bootstrap.servers=172.28.129.201:9092
+bootstrap.servers={{ mirrormaker_source_bootstrap_servers }}
 
 # Group ID & Client ID
-group.id=example-mirrormaker-group
-client.id=mirror_maker_consumer
+group.id={{ mirrormaker_source_group_id }}
+client.id={{ mirrormaker_source_client_id }}
 
 # RoundRobinAssignor will be the new default for better load balancing across brokers
 partition.assignment.strategy=org.apache.kafka.clients.consumer.RoundRobinAssignor
 
 # Make sure that NO internal topics get mirrored!  (consumer old style)
-exclude.internal.topics=true
+exclude.internal.topics={{ mirrormaker_source_exclude_internal_topics }}
 
 # how to (de-) serialize
 key.deserializer=org.apache.kafka.serialization.StringDeserializer

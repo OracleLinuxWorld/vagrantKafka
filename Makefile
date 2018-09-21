@@ -1,7 +1,7 @@
 .PHONY: all up-dc1 up-dc2 up provision-dc1 provision-dc2 provision restart-dc1 restart-dc2 restart brokers topics demo elastic_health elastic_indices elastic_allocation elastic all-dc1 all-dc2
 .DEFAULT_GOAL := all
 
-all: all-dc1 all-dc2 kafka-demo 
+all: all-dc1 all-dc2 kafka-demo
 
 all-dc1: up-dc1 provision-dc1 restart-dc1
 
@@ -68,3 +68,6 @@ restart: restart-dc1 restart-dc2
 kafka-demo:
 	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook_demo_script.yml  --limit "dc1"
 	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook_demo_script.yml  --limit "dc2"
+
+mirrormaker:
+	ansible-playbook -i vagrant/inventory/hosts vagrant/ansible-playbook.yml  --tags "mirrormaker"

@@ -61,15 +61,64 @@ elastic_sink_name:       'elastic_sink_connector'
 
 
 ###
-### MirrorMaker
+### MirrorMaker "confluent-mirrormaker" systemctl service
+### Note: only needs to run at the TARGET destination
 ###
-
-### Note:
-### only needs to run at the TARGET destination
 
 ### Config files
 mirrormaker_consumer_config: "/etc/kafka/consumer_dc1_to_dc2.properties"
 mirrormaker_producer_config: "/etc/kafka/producer_dc1_to_dc2.properties"
 
 ### Space separated list of topics needed to be replicated
-mirrormaker_topic_whitelist: "test"
+mirrormaker_topic_whitelist: "test test2 test3 test4 test5"
+
+# Number of parallel streams
+mirrormaker_num_streams: "3"
+mirrormaker_abort_on_failure: "true"
+
+
+###
+### MirrorMaker consumer & producer config files
+### Note: only needs to run at the TARGET destination
+###
+
+mirrormaker_log4j_rootLogger: "WARN, stderr, file"
+
+### Variables for SOURCE target (aka: dc1)
+
+# Example content: "172.28.129.201:9092,172.28.129.202:9092,172.28.129.203:9092"
+mirrormaker_source_bootstrap_servers: "
+{%- for node in groups['dc1_kafka_brokers'] -%}
+{{ node }}:{{ port_kafka_broker }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+"
+
+mirrormaker_source_group_id: "mirrormaker-group-source"
+mirrormaker_source_client_id: "mirror_maker_consumer"
+mirrormaker_source_exclude_internal_topics: "true"
+
+
+### Variables for DESTINATION target (aka: dc2)
+
+# Example content: "172.28.129.221:9092,172.28.129.222:9092,172.28.129.223:9092"
+mirrormaker_target_bootstrap_servers: "
+{%- for node in groups['dc2_kafka_brokers'] -%}
+{{ node }}:{{ port_kafka_broker }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+"
+
+# (valid values are none, gzip, snappy, or lz4)
+mirrormaker_target_compression_type: "none"
+mirrormaker_target_client_id: "mirror_maker_producer"
+mirrormaker_target_max_in_flight_requests_per_connection: "1"
+mirrormaker_target_retries: "Int.MaxValue"
+mirrormaker_target_acks: "all"
+mirrormaker_target_block_on_buffer_full: "true"
+
+# Note that enabling idempotence requires
+#   max.in.flight.requests.per.connection to be less than or equal to 5,
+#   retries to be greater than 0 and
+#   acks must be 'all'.
+# If these values are not explicitly set by the user, suitable values will be chosen.
+# If incompatible values are set, a ConfigException will be thrown.
+mirrormaker_target_enable_idempotence: "true"

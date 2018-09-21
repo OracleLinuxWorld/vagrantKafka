@@ -27,7 +27,7 @@ This Makefile contains several options to control the environment.
 The most common options have been described below:
 
 * make (without arguments)
-Will spin up a single DC setup. After spinning up the VMs for a single DC setup Ansible will be automatically called to provision the VMs.
+Will spin up a dual DC setup. After spinning up the VMs for a the DCs Ansible will be automatically called to provision the VMs.
 
 * make [up-dc1 | up-dc2]
 Will only spin up either dc1 or dc2. No Ansible scripting will be done.
@@ -41,6 +41,9 @@ Requires Vms to already be up.
 
 * make provision
 Will provision both dc1 and dc2.
+
+* make mirrormaker
+Will provision a MirrorMaker instance on the TARGET DC. In this case the process will be started on DC2. It will consume from DC1 and act as a producer for DC2.
 
 
 
@@ -92,3 +95,30 @@ Hint: Some lines were ellipsized, use -l to show in full.
 [vagrant@kafka_broker_01 ~]$
 
 ```
+
+
+# MirrorMaker
+
+An additional service "confluence-mirrormaker" has been added. This newly added service can be managed through the regular systemctl commands.
+
+Example:
+
+```
+[vagrant@dc2_kafka_workernode_01 ~]$ sudo systemctl status confluent-mirrormaker -l
+● confluent-mirrormaker.service - Apache Kafka - MirrorMaker
+   Loaded: loaded (/usr/lib/systemd/system/confluent-mirrormaker.service; static; vendor preset: disabled)
+   Active: active (running) since Fri 2018-09-21 11:28:37 UTC; 2min 52s ago
+ Main PID: 14189 (java)
+   CGroup: /system.slice/confluent-mirrormaker.service
+           └─14189 java -Xmx256M -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent -Djava.awt.headless=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dkafka.logs.dir=/var/log/kafka -Dlog4j.configuration=file:/etc/kafka/tools-log4j.properties -cp /bin/../share/java/kafka/*:/bin/../share/java/confluent-support-metrics/*:/usr/share/java/confluent-support-metrics/* kafka.tools.MirrorMaker --consumer.config /etc/kafka/consumer_dc1_to_dc2.properties --producer.config /etc/kafka/producer_dc1_to_dc2.properties --num.streams 3 --abort.on.send.failure true --whitelist test test2 test3 test4 test5
+
+Sep 21 11:28:37 dc2_kafka_workernode_01 systemd[1]: Started Apache Kafka - MirrorMaker.
+Sep 21 11:28:37 dc2_kafka_workernode_01 systemd[1]: Starting Apache Kafka - MirrorMaker...
+[vagrant@dc2_kafka_workernode_01 ~]$
+
+```
+
+*NOTE!!!*
+Do NOT start MirrorMaker on BOTH DCs. This will cause a neverending replication loop between both Kafka clusters!
+MirrorMaker does NOT have support for preventing this.
+Confluent Replicator is needed if you want to replicate both ways! 
