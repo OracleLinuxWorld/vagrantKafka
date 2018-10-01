@@ -14,7 +14,6 @@ up-dc1:
 	vagrant up kafka_workernode_01
 	vagrant up kafka_workernode_02
 	vagrant up kafka_control_center_01
-	vagrant up mysql_node_01
 	vagrant up elasticsearch_node_01
 
 up-dc2:

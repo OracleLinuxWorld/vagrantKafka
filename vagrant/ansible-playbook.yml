@@ -29,9 +29,9 @@
     - kafka_rest_proxy
 
 # 6) Create MySQL database
-- import_playbook: ansible-playbook_import_mysql_database.yml
-  tags:
-    - mysql
+#- import_playbook: ansible-playbook_import_mysql_database.yml
+#  tags:
+#    - mysql
 
 # Temporarily commented out the creation of the MySQL pipeline
 # 7) Setting up Kafka connect MySQL pipeline
@@ -45,6 +45,6 @@
     - elasticsearch
 
 # 8) Setting up MirrorMaker
-- import_playbook: ansible-playbook_import_mirrormaker.yml
-  tags:
-    - mirrormaker
+#- import_playbook: ansible-playbook_import_mirrormaker.yml
+#  tags:
+#    - mirrormaker
