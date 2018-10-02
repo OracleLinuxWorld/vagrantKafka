@@ -11,3 +11,6 @@ elasticsearch_network_host:     "0.0.0.0"
 # jvm.options
 jvm_initial_heap_size:      "512m"
 jvm_maximum_heap_size:      "512m"
+
+# ES_TMP
+ES_TMP: "/app/tmp"

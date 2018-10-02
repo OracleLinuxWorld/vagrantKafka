@@ -70,7 +70,8 @@
 -Dlog4j.shutdownHookEnabled=false
 -Dlog4j2.disable.jmx=true
 
--Djava.io.tmpdir=${ES_TMPDIR}
+#-Djava.io.tmpdir=${ES_TMPDIR}
+-Djava.io.tmpdir={{ ES_TMP }}
 
 ## heap dumps
 
@@ -101,4 +102,3 @@
 # due to internationalization enhancements in JDK 9 Elasticsearch need to set the provider to COMPAT otherwise
 # time/date parsing will break in an incompatible way for some date patterns and locals
 9-:-Djava.locale.providers=COMPAT
-

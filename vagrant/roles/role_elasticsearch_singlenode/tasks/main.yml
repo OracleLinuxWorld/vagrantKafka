@@ -1,4 +1,17 @@
 ###
+### Elasticsearch alternate TMP dir
+###
+
+  - name: creating /app/tmp dir to accomodate for alternate Elastic tmp dir
+    file:
+      path: "{{ ES_TMP }}"
+      state: directory
+      owner: "root"
+      group: "root"
+      mode: 0777
+
+
+###
 ### Elasticsearch config file
 ###
 
